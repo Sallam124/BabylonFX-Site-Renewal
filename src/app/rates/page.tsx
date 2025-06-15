@@ -50,6 +50,12 @@ const Rates = () => {
             sellRate: 1.10,
             lastUpdated: new Date().toISOString(),
           },
+          {
+            currency: 'CNY',
+            buyRate: 5.35,
+            sellRate: 5.25,
+            lastUpdated: new Date().toISOString(),
+          },
         ]
         setRates(mockRates)
         setIsLoading(false)
