@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Navigation from '@/components/Navigation'
+import LocationMap from '@/components/LocationMap'
+import Image from 'next/image'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -42,18 +44,62 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  const locations = [
+    {
+      name: 'Ottawa',
+      address: '2535 Bank St, Ottawa, ON K1V 8R9',
+      phone: '613-521-6002',
+      hours: [
+        'Monday – Friday: 10:00 AM – 5:30 PM',
+        'Saturday: 10:00 AM – 5:00 PM',
+        'Sunday: CLOSED'
+      ],
+      mapsUrl: 'https://maps.google.com/?q=2535+Bank+St+Ottawa+ON+K1V+8R9'
+    },
+    {
+      name: 'Mississauga',
+      address: '3060 Hurontario St, Mississauga, ON L5B 1N7',
+      phone: '905-566-9393',
+      hours: [
+        'Monday – Saturday: 10:00 AM – 6:00 PM',
+        'Sunday: CLOSED'
+      ],
+      mapsUrl: 'https://maps.google.com/?q=3060+Hurontario+St+Mississauga+ON+L5B+1N7'
+    },
+    {
+      name: 'Scarborough',
+      address: '1975 Lawrence Ave East, Scarborough, ON M1R 2Z2',
+      phone: '416-840-0086 / 9295',
+      hours: [
+        'Monday – Saturday: 10:00 AM – 6:00 PM',
+        'Sunday: CLOSED'
+      ],
+      mapsUrl: 'https://maps.google.com/?q=1975+Lawrence+Ave+East+Scarborough+ON+M1R+2Z2'
+    },
+    {
+      name: 'Windsor',
+      address: '793 Wyandotte St E, Windsor, ON N9A 3J5',
+      phone: '519-968-3558',
+      hours: [
+        'Monday – Saturday: 10:00 AM – 6:00 PM',
+        'Sunday: CLOSED'
+      ],
+      mapsUrl: 'https://maps.google.com/?q=793+Wyandotte+St+E+Windsor+ON+N9A+3J5'
+    }
+  ]
+
   return (
     <>
       <Navigation />
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         {/* Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">
+        <section className="relative py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center">
-              <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
+              <h1 className="text-4xl tracking-tight font-extrabold text-primary sm:text-5xl md:text-6xl">
                 Contact Us
               </h1>
-              <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+              <p className="mt-3 max-w-md mx-auto text-base text-gray-600 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
                 Get in touch with our team for any questions or assistance
               </p>
             </div>
@@ -167,45 +213,76 @@ const Contact = () => {
               {/* Contact Information */}
               <div className="space-y-8">
                 <div className="bg-white p-8 rounded-lg shadow-lg">
-                  <h2 className="text-2xl font-bold text-primary mb-6">Contact Information</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Address</h3>
-                      <p className="text-gray-600">
-                        123 Exchange Street<br />
-                        Toronto, ON M5V 2T6<br />
-                        Canada
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Phone</h3>
-                      <p className="text-gray-600">+1 (416) 555-0123</p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Email</h3>
-                      <p className="text-gray-600">info@babylonfx.com</p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Business Hours</h3>
-                      <p className="text-gray-600">
-                        Monday - Friday: 9:00 AM - 6:00 PM<br />
-                        Saturday: 10:00 AM - 4:00 PM<br />
-                        Sunday: Closed
-                      </p>
+                  <h2 className="text-2xl font-bold text-primary mb-6">Our Information</h2>
+                  
+                  {/* General Contact Info */}
+                  <div className="mb-4 p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100">
+                    <div className="flex items-center">
+                      <svg className="w-6 h-6 text-[#ffd700] mr-3" fill="none" stroke="black" viewBox="1 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <a 
+                        href="mailto:info@babylonfx.com"
+                        className="text-gray-600 hover:text-[#d4af37] transition-all duration-300 -ml-1"
+                      >
+                        info@babylonfx.com
+                      </a>
                     </div>
                   </div>
-                </div>
 
-                {/* Map Placeholder */}
-                <div className="bg-white p-8 rounded-lg shadow-lg">
-                  <h2 className="text-2xl font-bold text-primary mb-6">Location</h2>
-                  <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg">
-                    {/* In a real application, integrate a map component here */}
-                    <div className="flex items-center justify-center h-full text-gray-500">
-                      Map will be displayed here
-                    </div>
+                  <div className="space-y-6">
+                    {locations.map((location) => (
+                      <div key={location.name} className="border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                        <h3 className="text-lg font-semibold text-gray-900">{location.name}</h3>
+                        <div className="flex items-start mt-2">
+                          <Image
+                            src="/icons/pin.png"
+                            alt="Location"
+                            width={20}
+                            height={20}
+                            className="mt-0 mr-3 -ml-1"
+                          />
+                          <a 
+                            href={location.mapsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-600 hover:text-[#d4af37] transition-all duration-300"
+                          >
+                            {location.address}
+                          </a>
+                        </div>
+                        <div className="flex items-center mt-2">
+                          <Image
+                            src="/icons/phone.png"
+                            alt="Phone"
+                            width={20}
+                            height={20}
+                            className="mr-2"
+                          />
+                          <a 
+                            href={`tel:${location.phone.replace(/\s+/g, '')}`}
+                            className="text-gray-600 hover:text-[#d4af37] transition-all duration-300"
+                          >
+                            {location.phone}
+                          </a>
+                        </div>
+                        <div className="mt-2">
+                          {location.hours.map((hour, index) => (
+                            <p key={index} className="text-gray-600 text-sm">{hour}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Map Section */}
+            <div className="mt-12">
+              <div className="bg-white p-8 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-bold text-primary mb-6">Find Us</h2>
+                <LocationMap />
               </div>
             </div>
           </div>

@@ -3,13 +3,13 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Footer from '@/components/Footer'
+import { ExchangeRateProvider } from '@/context/ExchangeRateContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'BabylonFX - Professional Currency Exchange Services',
-  description: 'Trusted currency exchange services in Canada. Get the best rates for your currency exchange needs with BabylonFX.',
-  keywords: 'currency exchange, forex, money exchange, Canadian currency exchange, BabylonFX',
+  title: 'BabylonFX - Currency Exchange',
+  description: 'Your trusted partner for currency exchange services',
 }
 
 export default function RootLayout({
@@ -20,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-white text-gray-900`}>
-        <main className="min-h-screen">
-          {children}
-        </main>
+        <ExchangeRateProvider>
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </ExchangeRateProvider>
         <Footer />
       </body>
     </html>
