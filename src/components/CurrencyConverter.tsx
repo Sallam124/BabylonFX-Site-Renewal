@@ -15,6 +15,7 @@ const CurrencyConverter = () => {
   const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>([])
   const [convertedAmount, setConvertedAmount] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [currentTime, setCurrentTime] = useState<string>('')
 
   const currencies = [
     { code: 'CAD', name: 'Canadian Dollar' },
@@ -24,6 +25,17 @@ const CurrencyConverter = () => {
     { code: 'JPY', name: 'Japanese Yen' },
     { code: 'AUD', name: 'Australian Dollar' },
   ]
+
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(new Date().toLocaleTimeString())
+    }
+    
+    updateTime() // Initial update
+    const timeInterval = setInterval(updateTime, 1000) // Update every second
+
+    return () => clearInterval(timeInterval)
+  }, [])
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -137,7 +149,7 @@ const CurrencyConverter = () => {
         </div>
       </div>
       <div className="mt-4 text-sm text-gray-500 text-center">
-        Rates are updated every minute. Last updated: {new Date().toLocaleTimeString()}
+        Rates are updated every minute. Last updated: {currentTime}
       </div>
     </div>
   )

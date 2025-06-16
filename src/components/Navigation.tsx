@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 const Navigation = () => {
@@ -19,11 +20,17 @@ const Navigation = () => {
 
   return (
     <nav className="bg-primary text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex items-center -ml-4">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-secondary">BabylonFX</span>
+              <Image
+                src="/images/babylon-logo.png"
+                alt="BabylonFX Logo"
+                width={150}
+                height={40}
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
 
