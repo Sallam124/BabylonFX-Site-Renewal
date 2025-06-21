@@ -344,6 +344,31 @@ const CurrencyConverter = () => {
           <p className="text-gray-500">Enter an amount to convert</p>
         )}
       </div>
+
+      {/* Last updated text */}
+      <div className="mt-2 text-sm text-gray-500">
+        {exchangeRates.length > 0 && (
+          (() => {
+            // Find the most recent lastUpdated timestamp
+            const lastUpdated = exchangeRates.reduce((latest, rate) =>
+              new Date(rate.lastUpdated) > new Date(latest) ? rate.lastUpdated : latest,
+              exchangeRates[0].lastUpdated
+            )
+            // Calculate time difference
+            const diffMs = Date.now() - new Date(lastUpdated).getTime()
+            const diffSec = Math.floor(diffMs / 1000)
+            const diffMin = Math.floor(diffSec / 60)
+            const diffHr = Math.floor(diffMin / 60)
+            const diffDay = Math.floor(diffHr / 24)
+            let timeAgo = ''
+            if (diffDay > 0) timeAgo = `${diffDay} day${diffDay > 1 ? 's' : ''} ago`
+            else if (diffHr > 0) timeAgo = `${diffHr} hour${diffHr > 1 ? 's' : ''} ago`
+            else if (diffMin > 0) timeAgo = `${diffMin} minute${diffMin > 1 ? 's' : ''} ago`
+            else timeAgo = 'just now'
+            return <span>This was updated {timeAgo}</span>
+          })()
+        )}
+      </div>
     </div>
   )
 }

@@ -157,6 +157,45 @@ const LocationMap = () => {
     }
   }
 
+  // Find nearest branch using geolocation
+  const handleFindNearest = () => {
+    if (!map) return
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser.')
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude
+        const userLng = position.coords.longitude
+        // Find nearest location
+        let nearest = locations[0]
+        let minDist = Number.POSITIVE_INFINITY
+        locations.forEach((loc) => {
+          const dist = Math.sqrt(
+            Math.pow(loc.position.lat - userLat, 2) +
+            Math.pow(loc.position.lng - userLng, 2)
+          )
+          if (dist < minDist) {
+            minDist = dist
+            nearest = loc
+          }
+        })
+        // Pan/zoom to nearest branch and open info window
+        map.panTo(nearest.position)
+        map.setZoom(15)
+        if (markers[nearest.name]) {
+          Object.values(markers).forEach(({ infoWindow: iw }) => iw.close())
+          markers[nearest.name].infoWindow.open(map, markers[nearest.name].marker)
+        }
+        setSelectedLocation(nearest)
+      },
+      (err) => {
+        setError('Unable to retrieve your location.')
+      }
+    )
+  }
+
   if (error) {
     return (
       <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
@@ -175,6 +214,12 @@ const LocationMap = () => {
       {/* Location List Overlay */}
       <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-4 max-w-xs">
         <h3 className="font-bold text-lg mb-2">Our Locations</h3>
+        <button
+          onClick={handleFindNearest}
+          className="mb-4 w-full bg-primary text-white font-semibold py-2 rounded hover:bg-secondary transition-colors"
+        >
+          Find Nearest Branch
+        </button>
         <div className="space-y-2">
           {locations.map((location) => (
             <button
