@@ -17,6 +17,10 @@ const faqs = [
     answer: 'For transactions under $3,000, one piece of government-issued photo ID is required. For transactions over $3,000, two pieces of ID are required, including one government-issued photo ID.',
   },
   {
+    question: 'How do I set up rate alerts?',
+    answer: "Click on the <a href='/#rate-alert' class='inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-1 px-3 rounded-md transition-colors duration-300'>Set Rate Alert</a> button on our homepage or rates page. Then, fill out the form with your desired currency pair, target exchange rate, and your email address. We'll notify you as soon as your target rate is reached!",
+  },
+  {
     question: 'Are your rates competitive?',
     answer: 'Yes, we offer competitive rates and no hidden fees. Our rates are updated in real-time to ensure you get the best possible value for your currency exchange.',
   },
@@ -35,6 +39,10 @@ const faqs = [
   {
     question: 'What payment methods do you accept?',
     answer: 'We accept cash, debit cards, and bank drafts. For large transactions, we recommend calling ahead to confirm the best payment method.',
+  },
+  {
+    question: 'What is the fee for international money transfers?',
+    answer: 'We offer money transfer to most countries worldwide for a flat fee of $7 CAD for up to $7000 CAD transferred. Please contact us to confirm if your destination country is included.',
   },
 ]
 

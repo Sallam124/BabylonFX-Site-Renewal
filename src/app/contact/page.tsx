@@ -1,9 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, ReactNode } from 'react'
 import Navigation from '@/components/Navigation'
-import LocationMap from '@/components/LocationMap'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import { motion, useAnimation } from 'framer-motion'
+import { useInView } from 'react-intersection-observer'
+import AnimatedFallIn from '@/components/AnimatedFallIn'
+
+const LocationMap = dynamic(() => import('@/components/LocationMap'), { 
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-gray-200 flex items-center justify-center rounded-lg"><p>Loading map...</p></div>
+})
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -106,112 +114,128 @@ const Contact = () => {
           </div>
         </section>
 
+        {/* Map Section - now at the top */}
+        <section className="px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-white p-8 rounded-lg shadow-lg mb-12">
+              <AnimatedFallIn>
+                <div className="w-full">
+                  <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Our Locations</h2>
+                  <LocationMap />
+                </div>
+              </AnimatedFallIn>
+            </div>
+          </div>
+        </section>
+
         {/* Contact Form and Info */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {/* Contact Form */}
-              <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold text-primary mb-6">Send us a Message</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                      Subject
-                    </label>
-                    <select
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                    >
-                      <option value="">Select a subject</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="rates">Exchange Rates</option>
-                      <option value="services">Our Services</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={4}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                    />
-                  </div>
-                  <div>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-                    >
-                      {isSubmitting ? 'Sending...' : 'Send Message'}
-                    </button>
-                  </div>
-                  {submitStatus === 'success' && (
-                    <div className="text-green-600 text-center">
-                      Thank you for your message. We'll get back to you soon!
+              <AnimatedFallIn>
+                <div className="bg-white p-8 rounded-lg shadow-lg">
+                  <h2 className="text-2xl font-bold text-primary mb-6">Send us a Message</h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                      />
                     </div>
-                  )}
-                  {submitStatus === 'error' && (
-                    <div className="text-red-600 text-center">
-                      Sorry, there was an error sending your message. Please try again.
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                      />
                     </div>
-                  )}
-                </form>
-              </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                        Phone
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+                        Subject
+                      </label>
+                      <select
+                        id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                      >
+                        <option value="">Select a subject</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="rates">Exchange Rates</option>
+                        <option value="services">Our Services</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        rows={4}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                      />
+                    </div>
+                    <div>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+                      >
+                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                      </button>
+                    </div>
+                    {submitStatus === 'success' && (
+                      <div className="text-green-600 text-center">
+                        Thank you for your message. We'll get back to you soon!
+                      </div>
+                    )}
+                    {submitStatus === 'error' && (
+                      <div className="text-red-600 text-center">
+                        Sorry, there was an error sending your message. Please try again.
+                      </div>
+                    )}
+                  </form>
+                </div>
+              </AnimatedFallIn>
 
               {/* Contact Information */}
-              <div className="space-y-8">
+              <AnimatedFallIn delay={0.2}>
                 <div className="bg-white p-8 rounded-lg shadow-lg">
                   <h2 className="text-2xl font-bold text-primary mb-6">Our Information</h2>
                   
@@ -275,20 +299,35 @@ const Contact = () => {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Map Section */}
-            <div className="mt-12">
-              <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-bold text-primary mb-6">Find Us</h2>
-                <LocationMap />
-              </div>
+              </AnimatedFallIn>
             </div>
           </div>
         </section>
       </div>
     </>
+  )
+}
+
+// Animation wrapper for fall-in effect
+function AnimatedFallIn({ children, delay = 0 }: { children: ReactNode, delay?: number }) {
+  const controls = useAnimation()
+  const [ref, inView] = useInView({ threshold: 0.15 })
+  React.useEffect(() => {
+    if (inView) {
+      controls.start({ opacity: 1, y: 0, transition: { duration: 0.7, delay } })
+    } else {
+      controls.start({ opacity: 0, y: 60 })
+    }
+  }, [controls, inView, delay])
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 60 }}
+      animate={controls}
+      style={{ willChange: 'opacity, transform' }}
+    >
+      {children}
+    </motion.div>
   )
 }
 

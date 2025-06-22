@@ -1,3 +1,4 @@
+'use client'
 import Navigation from '@/components/Navigation'
 import CurrencyConverter from '@/components/CurrencyConverter'
 

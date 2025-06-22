@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation'
 import Image from 'next/image'
 import { useExchangeRates } from '@/context/ExchangeRateContext'
 import CurrencyConverter from '@/components/CurrencyConverter'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface ExchangeRate {
   currency: string
@@ -15,10 +16,13 @@ interface ExchangeRate {
   lastUpdated: string
 }
 
+const images = ['/images/rates/rates.png', '/images/rates/rates2.png', '/images/rates/rates3.png', '/images/rates/rates4.png', '/images/rates/rates5.png']
+
 const CurrencyRatesPage = () => {
   const { rates, isLoading, error, lastUpdated, supportedCurrencies } = useExchangeRates();
   const [currentTime, setCurrentTime] = useState<string>('')
   const [displayRates, setDisplayRates] = useState<ExchangeRate[]>([])
+  const [currentImage, setCurrentImage] = useState(0)
 
   useEffect(() => {
     const updateTime = () => {
@@ -29,6 +33,13 @@ const CurrencyRatesPage = () => {
     const timeInterval = setInterval(updateTime, 1000) // Update every second
 
     return () => clearInterval(timeInterval)
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length)
+    }, 3000) // Change image every 3 seconds
+    return () => clearInterval(timer)
   }, [])
 
   useEffect(() => {
@@ -172,36 +183,59 @@ const CurrencyRatesPage = () => {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         {/* Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center">
-              <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
-                Current Exchange Rates
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-white">
+          <div className="max-w-7xl mx-auto flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-6 flex justify-center h-24">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={images[currentImage]}
+                    src={images[currentImage]}
+                    alt="Exchange Rates"
+                    className="h-16 w-auto md:h-24 rounded-lg shadow-lg object-contain"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  />
+                </AnimatePresence>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary">
+                Unbeatable Exchange Rates
               </h1>
-              <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                Real-time currency exchange rates updated every minute
+              <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700">
+                Live. Transparent. Always in your favor.
+              </p>
+              <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-500">
+                Scroll down to see today's best rates—trusted by thousands, updated every minute, and designed to help you get more for your money.
               </p>
             </div>
           </div>
         </section>
 
         {/* Currency Converter */}
-        <section className="py-8 px-4 sm:px-6 lg:px-8">
+        {/* <section className="py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <CurrencyConverter />
           </div>
-        </section>
+        </section> */}
 
         {/* Rates Table */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+          <motion.div
+            className="w-full"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
             {error && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
                 <p className="text-red-600">{error}</p>
               </div>
             )}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="overflow-x-auto">
+            <div className="overflow-hidden">
+              <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -222,7 +256,7 @@ const CurrencyRatesPage = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200">
                     {isLoading ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
@@ -271,7 +305,7 @@ const CurrencyRatesPage = () => {
             <div className="mt-4 text-sm text-gray-500 text-center">
               Rates are updated every minute. Last updated: {currentTime}
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Disclaimer */}

@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [showRatesDropdown, setShowRatesDropdown] = useState(false)
   const pathname = usePathname()
 
   // Handle scroll effect
@@ -77,21 +78,55 @@ const Navigation = () => {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-2">
               {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  href={item.path}
-                  className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
-                    pathname === item.path
-                      ? scrolled 
-                        ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                        : 'bg-white/20 text-white backdrop-blur-sm'
-                      : scrolled
-                        ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
-                        : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                item.name === 'Rates' ? (
+                  <div
+                    key={item.path}
+                    className="relative"
+                    onMouseEnter={() => setShowRatesDropdown(true)}
+                    onMouseLeave={() => setShowRatesDropdown(false)}
+                  >
+                    <Link
+                      href={item.path}
+                      className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
+                        pathname === item.path
+                          ? scrolled 
+                            ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                            : 'bg-white/20 text-white backdrop-blur-sm'
+                          : scrolled
+                            ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
+                            : 'text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                    {showRatesDropdown && (
+                      <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                        <Link
+                          href="/rate-alert"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
+                        >
+                          Set Rate Alert
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    key={item.path}
+                    href={item.path}
+                    className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
+                      pathname === item.path
+                        ? scrolled 
+                          ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                          : 'bg-white/20 text-white backdrop-blur-sm'
+                        : scrolled
+                          ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
+                          : 'text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
           </div>

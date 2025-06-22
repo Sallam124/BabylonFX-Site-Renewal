@@ -1,14 +1,9 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { useExchangeRates } from '@/context/ExchangeRateContext'
 import Image from 'next/image'
-
-interface ExchangeRate {
-  currency: string
-  rate: number
-  lastUpdated: string
-}
+import TimeAgo from './TimeAgo'
+import { getExchangeRate } from '@/utils/exchangeRateService'
 
 interface CurrencyOption {
   value: string
@@ -16,6 +11,7 @@ interface CurrencyOption {
   flag: string
 }
 
+// Using the exact CurrencySelect component from the version you like
 const CurrencySelect = ({ 
   value, 
   onChange, 
@@ -101,159 +97,117 @@ const CurrencySelect = ({
 }
 
 const CurrencyConverter = () => {
-  const { rates, isLoading, error, supportedCurrencies } = useExchangeRates()
-  const [amount, setAmount] = useState<string>('1')
-  const [fromCurrency, setFromCurrency] = useState<string>('CAD')
-  const [toCurrency, setToCurrency] = useState<string>('USD')
+  const [amount, setAmount] = useState(100)
+  const [fromCurrency, setFromCurrency] = useState('CAD')
+  const [toCurrency, setToCurrency] = useState('USD')
   const [convertedAmount, setConvertedAmount] = useState<number | null>(null)
-  const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>([])
-  const [currentTime, setCurrentTime] = useState<string>('')
+  const [isConverting, setIsConverting] = useState(true)
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
+  const step = 1 // Change this to 0.1 or 0.01 if needed
+
+  // Top 10 most used currencies in Canada
   const currencies = [
     { code: 'CAD', name: 'Canadian Dollar' },
-    { code: 'USD', name: 'US Dollar' },
+    { code: 'USD', name: 'United States Dollar' },
     { code: 'EUR', name: 'Euro' },
     { code: 'GBP', name: 'British Pound' },
+    { code: 'INR', name: 'Indian Rupee' },
+    { code: 'CNY', name: 'Chinese Yuan' },
     { code: 'JPY', name: 'Japanese Yen' },
     { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'MXN', name: 'Mexican Peso' },
+    { code: 'BRL', name: 'Brazilian Real' },
   ]
 
-  useEffect(() => {
-    const updateTime = () => {
-      setCurrentTime(new Date().toLocaleTimeString())
+  const handleIncrement = () => {
+    setAmount(prev => +(prev + step).toFixed(2))
+  }
+
+  const handleDecrement = () => {
+    setAmount(prev => Math.max(0, +(prev - step).toFixed(2)))
+  }
+
+  const startHold = (action: () => void) => {
+    action() // Run once immediately
+    stopHold() // Prevent double intervals
+    intervalRef.current = setInterval(action, 100) // Repeat every 100ms
+  }
+
+  const stopHold = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
     }
-    
-    updateTime() // Initial update
-    const timeInterval = setInterval(updateTime, 1000) // Update every second
+  }
 
-    return () => clearInterval(timeInterval)
-  }, [])
-
+  // Cleanup on unmount
   useEffect(() => {
-    const fetchRates = async () => {
-      try {
-        // In a real application, this would be an API call to your backend
-        // For now, we'll use mock data
-        const mockRates: ExchangeRate[] = [
-          { currency: 'USD', rate: 0.74, lastUpdated: new Date().toISOString() },
-          { currency: 'EUR', rate: 0.68, lastUpdated: new Date().toISOString() },
-          { currency: 'GBP', rate: 0.58, lastUpdated: new Date().toISOString() },
-          { currency: 'JPY', rate: 110.5, lastUpdated: new Date().toISOString() },
-          { currency: 'AUD', rate: 1.12, lastUpdated: new Date().toISOString() },
-        ]
-        setExchangeRates(mockRates)
-      } catch (error) {
-        console.error('Error fetching exchange rates:', error)
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
       }
     }
-
-    fetchRates()
   }, [])
 
   useEffect(() => {
-    if (isLoading || !rates || !amount) {
-      setConvertedAmount(null)
-      return
+    const handleConvert = async () => {
+      const numericAmount = amount
+      if (!numericAmount || numericAmount <= 0) {
+        setConvertedAmount(null)
+        setIsConverting(false)
+        return
+      }
+      if (fromCurrency === toCurrency) {
+        setConvertedAmount(numericAmount)
+        setLastUpdated(new Date().toISOString())
+        setIsConverting(false)
+        return
+      }
+
+      setIsConverting(true)
+      setError(null)
+      
+      try {
+        const rate = await getExchangeRate(fromCurrency, toCurrency)
+        setConvertedAmount(numericAmount * rate)
+        setLastUpdated(new Date().toISOString())
+      } catch (err) {
+        setError('Failed to fetch rate.')
+        setConvertedAmount(null)
+      } finally {
+        setIsConverting(false)
+      }
     }
+    
+    const debounceHandler = setTimeout(() => {
+      handleConvert()
+    }, 300)
 
-    const numericAmount = parseFloat(amount)
-    if (isNaN(numericAmount)) {
-      setConvertedAmount(null)
-      return
-    }
+    return () => clearTimeout(debounceHandler)
 
-    let result: number
-
-    if (fromCurrency === 'CAD') {
-      // Converting from CAD to another currency
-      result = numericAmount * rates[toCurrency]
-    } else if (toCurrency === 'CAD') {
-      // Converting to CAD from another currency
-      result = numericAmount / rates[fromCurrency]
-    } else {
-      // Converting between two non-CAD currencies
-      // First convert to CAD, then to target currency
-      const cadAmount = numericAmount / rates[fromCurrency]
-      result = cadAmount * rates[toCurrency]
-    }
-
-    setConvertedAmount(result)
-  }, [amount, fromCurrency, toCurrency, rates, isLoading])
-
-  const getFlagPath = (currencyCode: string): string => {
-    const flagMap: { [key: string]: string } = {
-      'USD': 'usa',
-      'EUR': 'eu',
-      'GBP': 'gb',
-      'JPY': 'jp',
-      'AUD': 'au',
-      'CNY': 'cn',
-      'DKK': 'dk',
-      'CHF': 'ch',
-      'INR': 'in',
-      'MXN': 'mx',
-      'BRL': 'br',
-      'KRW': 'kr',
-      'AED': 'ae',
-      'RUB': 'ru',
-      'SAR': 'sa',
-      'JOD': 'jo',
-      'KWD': 'kw',
-      'IQD': 'iq',
-      'BSD': 'bs',
-      'BHD': 'bh',
-      'BOB': 'bo',
-      'BGN': 'bg',
-      'COP': 'co',
-      'CRC': 'cr',
-      'DOP': 'do',
-      'EGP': 'eg',
-      'ETB': 'et',
-      'GYD': 'gy',
-      'HNL': 'hn',
-      'HUF': 'hu',
-      'IDR': 'id',
-      'JMD': 'jm',
-      'KES': 'ke',
-      'NPR': 'np',
-      'NZD': 'nz',
-      'NOK': 'no',
-      'OMR': 'om',
-      'PKR': 'pk',
-      'PEN': 'pe',
-      'PHP': 'ph',
-      'PLN': 'pl',
-      'QAR': 'qa',
-      'SGD': 'sg',
-      'ZAR': 'za',
-      'SEK': 'se',
-      'TWD': 'tw',
-      'THB': 'th',
-      'TTD': 'tt',
-      'TND': 'tn',
-      'TRY': 'tr',
-      'VND': 'vn',
-      'HKD': 'hk'
-    }
-    return `/images/flags/${flagMap[currencyCode] || currencyCode.toLowerCase()}.png`
-  }
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setAmount(value)
-    }
-  }
-
+  }, [amount, fromCurrency, toCurrency])
+  
   const handleSwapCurrencies = () => {
     setFromCurrency(toCurrency)
     setToCurrency(fromCurrency)
   }
 
-  const currencyOptions = supportedCurrencies.map(currency => ({
-    value: currency,
-    label: currency,
-    flag: getFlagPath(currency)
+  const getFlagPath = (currencyCode: string): string => {
+    const flagMap: { [key: string]: string } = {
+      CAD: 'cad.png', USD: 'usa.png', EUR: 'eu.png', GBP: 'gb.png', 
+      INR: 'in.png', CNY: 'cn.png', JPY: 'jp.png', AUD: 'au.png', 
+      MXN: 'mx.png', BRL: 'br.png'
+    }
+    return `/images/flags/${flagMap[currencyCode.toUpperCase()] || 'default.png'}`
+  }
+  
+  const currencyOptions = currencies.map(currency => ({
+    value: currency.code,
+    label: currency.name,
+    flag: getFlagPath(currency.code)
   }))
 
   return (
@@ -261,7 +215,6 @@ const CurrencyConverter = () => {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Currency Converter</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* From Currency */}
         <div className="space-y-4">
           <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
             Amount
@@ -269,22 +222,55 @@ const CurrencyConverter = () => {
           <div className="relative rounded-md shadow-sm">
             <input
               type="number"
-              name="amount"
               id="amount"
+              name="amount"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-12 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors"
+              onChange={(e) => setAmount(+e.target.value)}
+              className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-16 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors"
               placeholder="0"
-              min="0"
-              step="1"
+              title="Enter amount to convert"
             />
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            
+            {/* Currency Label - Right Side */}
+            <div className="absolute inset-y-0 right-0 flex items-center pr-16">
               <span className="text-gray-500 text-lg">{fromCurrency}</span>
+            </div>
+            
+            {/* Increment/Decrement Arrows - Right Side */}
+            <div className="absolute inset-y-0 right-0 flex flex-col">
+              <button
+                type="button"
+                title="Increase amount"
+                onMouseDown={() => startHold(handleIncrement)}
+                onMouseUp={stopHold}
+                onMouseLeave={stopHold}
+                onTouchStart={() => startHold(handleIncrement)}
+                onTouchEnd={stopHold}
+                className="flex-1 flex items-center justify-center px-2 hover:bg-gray-100 transition-colors rounded-tr-md"
+              >
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+              <div className="w-px bg-gray-300"></div>
+              <button
+                type="button"
+                title="Decrease amount"
+                onMouseDown={() => startHold(handleDecrement)}
+                onMouseUp={stopHold}
+                onMouseLeave={stopHold}
+                onTouchStart={() => startHold(handleDecrement)}
+                onTouchEnd={stopHold}
+                className="flex-1 flex items-center justify-center px-2 hover:bg-gray-100 transition-colors rounded-br-md"
+              >
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Currency Selection Section */}
         <div className="space-y-6 mt-2">
           <div className="grid grid-cols-2 gap-4">
             <CurrencySelect
@@ -303,7 +289,6 @@ const CurrencyConverter = () => {
         </div>
       </div>
 
-      {/* Swap Button - Moved outside the grid */}
       <div className="flex justify-end mt-4">
         <button
           type="button"
@@ -318,59 +303,47 @@ const CurrencyConverter = () => {
             aria-hidden="true"
           >
             <path
-              fillRule="evenodd"
-              d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-              clipRule="evenodd"
+            fillRule="evenodd"
+            d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clipRule="evenodd"
             />
           </svg>
           <span className="ml-2">Swap Currencies</span>
         </button>
       </div>
 
-      {/* Result */}
-      <div className="mt-6">
-        {isLoading ? (
-          <p className="text-gray-500">Loading rates...</p>
+      <div className="mt-6 min-h-[96px]">
+        {isConverting ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <div className="bg-red-50 text-red-700 rounded-lg p-4 border-2 border-red-200">
+            <p className="text-sm font-medium">{error}</p>
+          </div>
         ) : convertedAmount !== null ? (
           <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200">
             <p className="text-sm text-gray-500">Converted Amount</p>
             <p className="text-2xl font-bold text-gray-900">
-              {convertedAmount.toFixed(2)} {toCurrency}
+            {convertedAmount.toFixed(2)} {toCurrency}
             </p>
           </div>
         ) : (
-          <p className="text-gray-500">Enter an amount to convert</p>
+          <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200 h-full flex items-center justify-center">
+            <p className="text-gray-500">Enter an amount to convert</p>
+          </div>
         )}
       </div>
 
-      {/* Last updated text */}
-      <div className="mt-2 text-sm text-gray-500">
-        {exchangeRates.length > 0 && (
-          (() => {
-            // Find the most recent lastUpdated timestamp
-            const lastUpdated = exchangeRates.reduce((latest, rate) =>
-              new Date(rate.lastUpdated) > new Date(latest) ? rate.lastUpdated : latest,
-              exchangeRates[0].lastUpdated
-            )
-            // Calculate time difference
-            const diffMs = Date.now() - new Date(lastUpdated).getTime()
-            const diffSec = Math.floor(diffMs / 1000)
-            const diffMin = Math.floor(diffSec / 60)
-            const diffHr = Math.floor(diffMin / 60)
-            const diffDay = Math.floor(diffHr / 24)
-            let timeAgo = ''
-            if (diffDay > 0) timeAgo = `${diffDay} day${diffDay > 1 ? 's' : ''} ago`
-            else if (diffHr > 0) timeAgo = `${diffHr} hour${diffHr > 1 ? 's' : ''} ago`
-            else if (diffMin > 0) timeAgo = `${diffMin} minute${diffMin > 1 ? 's' : ''} ago`
-            else timeAgo = 'just now'
-            return <span>This was updated {timeAgo}</span>
-          })()
+      <div className="mt-2 text-sm text-gray-500 h-5 text-center">
+        {!isConverting && !error && lastUpdated && (
+          <span>
+            This was updated <TimeAgo timestamp={lastUpdated} />
+          </span>
         )}
       </div>
     </div>
   )
 }
 
-export default CurrencyConverter 
+export default CurrencyConverter
