@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { motion, useAnimation } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import AnimatedFallIn from '@/components/AnimatedFallIn'
 
 const LocationMap = dynamic(() => import('@/components/LocationMap'), { 
   ssr: false,
