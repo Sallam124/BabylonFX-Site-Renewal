@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useState, ReactNode } from 'react'
+import React, { useState } from 'react'
 import Navigation from '@/components/Navigation'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { motion, useAnimation } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+import AnimatedFallIn from '@/components/AnimatedFallIn'
 
 const LocationMap = dynamic(() => import('@/components/LocationMap'), { 
   ssr: false,
@@ -304,29 +303,6 @@ const Contact = () => {
         </section>
       </div>
     </>
-  )
-}
-
-// Animation wrapper for fall-in effect
-function AnimatedFallIn({ children, delay = 0 }: { children: ReactNode, delay?: number }) {
-  const controls = useAnimation()
-  const [ref, inView] = useInView({ threshold: 0.15 })
-  React.useEffect(() => {
-    if (inView) {
-      controls.start({ opacity: 1, y: 0, transition: { duration: 0.7, delay } })
-    } else {
-      controls.start({ opacity: 0, y: 60 })
-    }
-  }, [controls, inView, delay])
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={controls}
-      style={{ willChange: 'opacity, transform' }}
-    >
-      {children}
-    </motion.div>
   )
 }
 

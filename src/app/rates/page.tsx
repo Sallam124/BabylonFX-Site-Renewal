@@ -43,7 +43,7 @@ const CurrencyRatesPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isLoading || !rates) return;
+    if (!rates) return; // Don't process if rates are still loading
 
     const baseCurrency = 'CAD';
     const spread = 0.005; // 0.5% spread
@@ -60,7 +60,7 @@ const CurrencyRatesPage = () => {
       }));
 
     setDisplayRates(newRates);
-  }, [rates, isLoading, lastUpdated, supportedCurrencies]);
+  }, [rates, lastUpdated, supportedCurrencies]);
 
   const getCountryName = (currencyCode: string): string => {
     const countryNames: { [key: string]: string } = {
@@ -234,6 +234,34 @@ const CurrencyRatesPage = () => {
                 <p className="text-red-600">{error}</p>
               </div>
             )}
+            
+            {/* Fallback rates disclaimer */}
+            {!rates && !isLoading && (
+              <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-amber-800">
+                      Live Rates Temporarily Unavailable
+                    </h3>
+                    <div className="mt-2 text-sm text-amber-700">
+                      <p>
+                        We apologize for the inconvenience. Our live rate service is currently experiencing technical difficulties. 
+                        The rates shown below are fallback rates and may not reflect current market conditions.
+                      </p>
+                      <p className="mt-1">
+                        For the most accurate and up-to-date rates, please contact us directly or visit one of our locations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="overflow-hidden">
               <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -258,11 +286,26 @@ const CurrencyRatesPage = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {isLoading ? (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                          Loading rates...
-                        </td>
-                      </tr>
+                      // Loading state with skeleton rows
+                      Array.from({ length: 10 }).map((_, index) => (
+                        <tr key={index} className="animate-pulse">
+                          <td className="px-6 py-6 whitespace-nowrap">
+                            <div className="w-8 h-6 bg-gray-200 rounded-sm"></div>
+                          </td>
+                          <td className="px-6 py-6 whitespace-nowrap">
+                            <div className="w-12 h-4 bg-gray-200 rounded"></div>
+                          </td>
+                          <td className="px-6 py-6 whitespace-nowrap">
+                            <div className="w-32 h-4 bg-gray-200 rounded"></div>
+                          </td>
+                          <td className="px-6 py-6 whitespace-nowrap">
+                            <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                          </td>
+                          <td className="px-6 py-6 whitespace-nowrap">
+                            <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                          </td>
+                        </tr>
+                      ))
                     ) : displayRates.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
@@ -303,7 +346,14 @@ const CurrencyRatesPage = () => {
               </div>
             </div>
             <div className="mt-4 text-sm text-gray-500 text-center">
-              Rates are updated every minute. Last updated: {currentTime}
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  <span>Loading live rates...</span>
+                </div>
+              ) : (
+                `Rates are updated every minute. Last updated: ${currentTime}`
+              )}
             </div>
           </motion.div>
         </section>

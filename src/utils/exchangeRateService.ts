@@ -143,7 +143,7 @@ export async function getExchangeRate(from: string, to: string): Promise<number>
     console.log(`Exchange rate fetched from ExchangeRate-API: ${from}/${to} = ${rate}`);
     return rate;
   } catch (error) {
-    console.error('ExchangeRate-API failed:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('ExchangeRate-API failed:', error instanceof Error ? error.message : 'Unknown error');
   }
 
   // Step 2: Try ECB API as fallback
@@ -190,7 +190,7 @@ export async function getExchangeRate(from: string, to: string): Promise<number>
       return rate;
     }
   } catch (error) {
-    console.error('ECB API failed:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('ECB API failed:', error instanceof Error ? error.message : 'Unknown error');
   }
 
   // Step 3: Try CurrencyFreaks API as last resort
@@ -206,23 +206,23 @@ export async function getExchangeRate(from: string, to: string): Promise<number>
     const url = `https://api.currencyfreaks.com/v2.0/rates/latest?base=${from}&symbols=${to}&apikey=${currencyFreaksKey}`;
     console.log('CurrencyFreaks Request URL:', url);
     
-    const response = await axios.get<CurrencyFreaksResponse>(
-      url,
-      {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+      const response = await axios.get<CurrencyFreaksResponse>(
+        url,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
         timeout: 5000 // 5 second timeout
       }
     );
 
-    if (response.data.status === 'success' && response.data.rates[to]) {
-      console.log(`Exchange rate fetched from CurrencyFreaks API: ${from}/${to}`);
-      return response.data.rates[to];
-    } else {
-      console.error('CurrencyFreaks API returned invalid response:', response.data);
-      throw new Error(`Invalid response from CurrencyFreaks API: ${JSON.stringify(response.data)}`);
+      if (response.data.status === 'success' && response.data.rates[to]) {
+        console.log(`Exchange rate fetched from CurrencyFreaks API: ${from}/${to}`);
+        return response.data.rates[to];
+      } else {
+        console.error('CurrencyFreaks API returned invalid response:', response.data);
+        throw new Error(`Invalid response from CurrencyFreaks API: ${JSON.stringify(response.data)}`);
     }
   } catch (error) {
     console.error('CurrencyFreaks API failed:', error instanceof Error ? error.message : 'Unknown error');

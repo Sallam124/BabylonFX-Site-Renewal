@@ -123,11 +123,25 @@ const CurrencyConverter = () => {
   ]
 
   const handleIncrement = () => {
-    setAmount(prev => +(prev + step).toFixed(2))
+    setAmount(prev => {
+      const newAmount = +(prev + step).toFixed(2)
+      // Trigger immediate conversion for increment/decrement
+      setTimeout(() => {
+        handleConvert(newAmount)
+      }, 0)
+      return newAmount
+    })
   }
 
   const handleDecrement = () => {
-    setAmount(prev => Math.max(0, +(prev - step).toFixed(2)))
+    setAmount(prev => {
+      const newAmount = Math.max(0, +(prev - step).toFixed(2))
+      // Trigger immediate conversion for increment/decrement
+      setTimeout(() => {
+        handleConvert(newAmount)
+      }, 0)
+      return newAmount
+    })
   }
 
   const startHold = (action: () => void) => {
@@ -152,36 +166,37 @@ const CurrencyConverter = () => {
     }
   }, [])
 
-  useEffect(() => {
-    const handleConvert = async () => {
-      const numericAmount = amount
-      if (!numericAmount || numericAmount <= 0) {
-        setConvertedAmount(null)
-        setIsConverting(false)
-        return
-      }
-      if (fromCurrency === toCurrency) {
-        setConvertedAmount(numericAmount)
-        setLastUpdated(new Date().toISOString())
-        setIsConverting(false)
-        return
-      }
-
-      setIsConverting(true)
-      setError(null)
-      
-      try {
-        const rate = await getExchangeRate(fromCurrency, toCurrency)
-        setConvertedAmount(numericAmount * rate)
-        setLastUpdated(new Date().toISOString())
-      } catch (err) {
-        setError('Failed to fetch rate.')
-        setConvertedAmount(null)
-      } finally {
-        setIsConverting(false)
-      }
+  // Extract conversion logic to a separate function
+  const handleConvert = async (numericAmount?: number) => {
+    const amountToConvert = numericAmount ?? amount
+    if (!amountToConvert || amountToConvert <= 0) {
+      setConvertedAmount(null)
+      setIsConverting(false)
+      return
     }
+    if (fromCurrency === toCurrency) {
+      setConvertedAmount(amountToConvert)
+      setLastUpdated(new Date().toISOString())
+      setIsConverting(false)
+      return
+    }
+
+    setIsConverting(true)
+    setError(null)
     
+    try {
+      const rate = await getExchangeRate(fromCurrency, toCurrency)
+      setConvertedAmount(amountToConvert * rate)
+      setLastUpdated(new Date().toISOString())
+    } catch (err) {
+      setError('Failed to fetch rate.')
+      setConvertedAmount(null)
+    } finally {
+      setIsConverting(false)
+    }
+  }
+
+  useEffect(() => {
     const debounceHandler = setTimeout(() => {
       handleConvert()
     }, 300)
@@ -226,7 +241,7 @@ const CurrencyConverter = () => {
               name="amount"
               value={amount}
               onChange={(e) => setAmount(+e.target.value)}
-              className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-16 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors"
+              className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-16 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
               title="Enter amount to convert"
             />
@@ -286,60 +301,47 @@ const CurrencyConverter = () => {
               label="To"
             />
           </div>
+          
+          <button
+            onClick={handleSwapCurrencies}
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center space-x-2"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <span>Swap Currencies</span>
+          </button>
         </div>
       </div>
 
-      <div className="flex justify-end mt-4">
-        <button
-          type="button"
-          onClick={handleSwapCurrencies}
-          className="inline-flex items-center px-4 py-2 border-2 border-gray-200 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-        >
-          <svg
-            className="h-5 w-5 text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-            fillRule="evenodd"
-            d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clipRule="evenodd"
-            />
-          </svg>
-          <span className="ml-2">Swap Currencies</span>
-        </button>
-      </div>
-
-      <div className="mt-6 min-h-[96px]">
-        {isConverting ? (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      {/* Conversion Result */}
+      <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-600">Converted Amount</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {convertedAmount !== null ? convertedAmount.toFixed(2) : '---'}
+            </p>
+            <p className="text-sm text-gray-500">{toCurrency}</p>
           </div>
-        ) : error ? (
-          <div className="bg-red-50 text-red-700 rounded-lg p-4 border-2 border-red-200">
-            <p className="text-sm font-medium">{error}</p>
-          </div>
-        ) : convertedAmount !== null ? (
-          <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200">
-            <p className="text-sm text-gray-500">Converted Amount</p>
-            <p className="text-2xl font-bold text-gray-900">
-            {convertedAmount.toFixed(2)} {toCurrency}
+          <div className="text-right">
+            <p className="text-sm text-gray-600">Exchange Rate</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {fromCurrency === toCurrency ? '1.00' : 
+               convertedAmount && amount ? (convertedAmount / amount).toFixed(4) : '---'}
+            </p>
+            <p className="text-xs text-gray-500">
+              {isConverting ? 'Converting...' : 'Live Rate'}
             </p>
           </div>
-        ) : (
-          <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200 h-full flex items-center justify-center">
-            <p className="text-gray-500">Enter an amount to convert</p>
+        </div>
+        
+        {lastUpdated && (
+          <div className="mt-4 pt-4 border-t border-blue-200">
+            <p className="text-xs text-gray-500">
+              Last updated: <TimeAgo timestamp={lastUpdated} />
+            </p>
           </div>
-        )}
-      </div>
-
-      <div className="mt-2 text-sm text-gray-500 h-5 text-center">
-        {!isConverting && !error && lastUpdated && (
-          <span>
-            This was updated <TimeAgo timestamp={lastUpdated} />
-          </span>
         )}
       </div>
     </div>
