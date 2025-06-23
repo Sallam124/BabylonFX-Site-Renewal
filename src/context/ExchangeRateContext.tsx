@@ -38,8 +38,8 @@ export const ExchangeRateProvider: React.FC<{ children: React.ReactNode }> = ({ 
     'VND': 18250.3, 'HKD': 5.78
   };
 
-  const [rates, setRates] = useState<{ [key: string]: number } | null>(mockRates); // Start with mock rates
-  const [isLoading, setIsLoading] = useState(false); // Start as not loading since we have fallback rates
+  const [rates, setRates] = useState<{ [key: string]: number } | null>(null); // Start with no rates
+  const [isLoading, setIsLoading] = useState(true); // Start as loading
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>(new Date().toISOString()); // Set initial timestamp
 
@@ -103,14 +103,9 @@ export const ExchangeRateProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   useEffect(() => {
-    // Fetch real rates after a short delay to allow the UI to render first
-    const timer = setTimeout(() => {
-      fetchRates();
-    }, 1000);
-
+    fetchRates(); // Fetch immediately on mount
     const interval = setInterval(fetchRates, 60000); // Update rates every minute
     return () => {
-      clearTimeout(timer);
       clearInterval(interval);
     };
   }, []);

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { currencyNames } from '@/utils/exchangeRateService'
 
 const RateAlertForm = ({ supportedCurrencies }: { supportedCurrencies: string[] }) => {
   const [buyCurrency, setBuyCurrency] = useState('USD')
@@ -29,36 +30,21 @@ const RateAlertForm = ({ supportedCurrencies }: { supportedCurrencies: string[] 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 mt-8 max-w-xl mx-auto">
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mt-8 max-w-xl w-full mx-auto">
       <h3 className="text-xl font-bold text-primary mb-4">Set a Rate Alert</h3>
       {error && <div className="text-red-600 mb-3">{error}</div>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label htmlFor="buy-currency" className="block text-sm font-medium text-gray-700 mb-1">Currency to Buy</label>
-          <select
-            id="buy-currency"
-            value={buyCurrency}
-            onChange={e => setBuyCurrency(e.target.value)}
-            className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary"
-          >
-            {supportedCurrencies.map(cur => (
-              <option key={cur} value={cur}>{cur}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="exchange-with" className="block text-sm font-medium text-gray-700 mb-1">Currency to Exchange With</label>
-          <select
-            id="exchange-with"
-            value={exchangeWith}
-            onChange={e => setExchangeWith(e.target.value)}
-            className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary"
-          >
-            {supportedCurrencies.map(cur => (
-              <option key={cur} value={cur}>{cur}</option>
-            ))}
-          </select>
-        </div>
+      <div className="mb-4">
+        <label htmlFor="buy-currency" className="block text-sm font-medium text-gray-700 mb-1">Currency to Buy</label>
+        <select
+          id="buy-currency"
+          value={buyCurrency}
+          onChange={e => setBuyCurrency(e.target.value)}
+          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary text-base"
+        >
+          {supportedCurrencies.map(cur => (
+            <option key={cur} value={cur}>{cur} - {currencyNames[cur] || cur}</option>
+          ))}
+        </select>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Desired Price</label>
@@ -68,9 +54,22 @@ const RateAlertForm = ({ supportedCurrencies }: { supportedCurrencies: string[] 
           min="0"
           value={desiredPrice}
           onChange={e => setDesiredPrice(e.target.value)}
-          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary"
+          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary text-base"
           placeholder="e.g. 0.75"
         />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="exchange-with" className="block text-sm font-medium text-gray-700 mb-1">Currency to Exchange With</label>
+        <select
+          id="exchange-with"
+          value={exchangeWith}
+          onChange={e => setExchangeWith(e.target.value)}
+          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary text-base"
+        >
+          {supportedCurrencies.map(cur => (
+            <option key={cur} value={cur}>{cur} - {currencyNames[cur] || cur}</option>
+          ))}
+        </select>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -78,13 +77,13 @@ const RateAlertForm = ({ supportedCurrencies }: { supportedCurrencies: string[] 
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary"
+          className="block w-full rounded-md border-2 border-gray-200 p-2 focus:border-primary focus:ring-primary text-base"
           placeholder="you@email.com"
         />
       </div>
       <button
         type="submit"
-        className="w-full bg-primary text-white font-semibold py-3 rounded hover:bg-secondary transition-colors"
+        className="w-full bg-primary text-white font-semibold py-3 rounded hover:bg-secondary transition-colors text-base"
       >
         Set Alert
       </button>

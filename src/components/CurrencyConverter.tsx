@@ -97,7 +97,7 @@ const CurrencySelect = ({
 }
 
 const CurrencyConverter = () => {
-  const [amount, setAmount] = useState(100)
+  const [amount, setAmount] = useState<string>('100')
   const [fromCurrency, setFromCurrency] = useState('CAD')
   const [toCurrency, setToCurrency] = useState('USD')
   const [convertedAmount, setConvertedAmount] = useState<number | null>(null)
@@ -124,23 +124,23 @@ const CurrencyConverter = () => {
 
   const handleIncrement = () => {
     setAmount(prev => {
-      const newAmount = +(prev + step).toFixed(2)
-      // Trigger immediate conversion for increment/decrement
+      const prevNum = parseFloat(prev) || 0
+      const newAmount = +(prevNum + step).toFixed(2)
       setTimeout(() => {
         handleConvert(newAmount)
       }, 0)
-      return newAmount
+      return newAmount.toString()
     })
   }
 
   const handleDecrement = () => {
     setAmount(prev => {
-      const newAmount = Math.max(0, +(prev - step).toFixed(2))
-      // Trigger immediate conversion for increment/decrement
+      const prevNum = parseFloat(prev) || 0
+      const newAmount = Math.max(0, +(prevNum - step).toFixed(2))
       setTimeout(() => {
         handleConvert(newAmount)
       }, 0)
-      return newAmount
+      return newAmount.toString()
     })
   }
 
@@ -168,8 +168,8 @@ const CurrencyConverter = () => {
 
   // Extract conversion logic to a separate function
   const handleConvert = async (numericAmount?: number) => {
-    const amountToConvert = numericAmount ?? amount
-    if (!amountToConvert || amountToConvert <= 0) {
+    const amountToConvert = numericAmount !== undefined ? numericAmount : parseFloat(amount)
+    if (!amount || amountToConvert <= 0 || isNaN(amountToConvert)) {
       setConvertedAmount(null)
       setIsConverting(false)
       return
@@ -225,9 +225,48 @@ const CurrencyConverter = () => {
     flag: getFlagPath(currency.code)
   }))
 
+  // Periodically refresh if price is not available
+  useEffect(() => {
+    if (convertedAmount === null && !isConverting && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0) {
+      const interval = setInterval(() => {
+        handleConvert()
+      }, 1000)
+      return () => clearInterval(interval)
+    }
+    return undefined
+  }, [convertedAmount, isConverting, amount, fromCurrency, toCurrency])
+
+  // Refresh handler
+  const handleRefresh = () => {
+    setAmount('100')
+    setFromCurrency('CAD')
+    setToCurrency('USD')
+    setConvertedAmount(null)
+    setError(null)
+    setLastUpdated(null)
+    setIsConverting(true)
+    setTimeout(() => handleConvert(100), 0)
+  }
+  useEffect(() => {
+    if (isConverting && convertedAmount !== null) {
+      setIsConverting(false);
+    }
+  }, [isConverting, convertedAmount]);
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Currency Converter</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Currency Converter</h2>
+        <button
+          onClick={handleRefresh}
+          className="ml-4 p-2 text-gray-400 hover:text-blue-600 transition-colors"
+          title="Refresh Converter"
+          aria-label="Refresh Converter"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582M20 20v-5h-.581M5.582 9A7.003 7.003 0 0112 5c1.657 0 3.156.576 4.358 1.535M18.418 15A7.003 7.003 0 0112 19a6.978 6.978 0 01-4.358-1.535" />
+          </svg>
+        </button>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
@@ -240,7 +279,7 @@ const CurrencyConverter = () => {
               id="amount"
               name="amount"
               value={amount}
-              onChange={(e) => setAmount(+e.target.value)}
+              onChange={(e) => setAmount(e.target.value)}
               className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-16 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
               title="Enter amount to convert"
@@ -320,7 +359,7 @@ const CurrencyConverter = () => {
           <div>
             <p className="text-sm text-gray-600">Converted Amount</p>
             <p className="text-3xl font-bold text-gray-900">
-              {convertedAmount !== null ? convertedAmount.toFixed(2) : '---'}
+              {convertedAmount !== null && amount && !isNaN(parseFloat(amount)) ? convertedAmount.toFixed(2) : '---'}
             </p>
             <p className="text-sm text-gray-500">{toCurrency}</p>
           </div>
@@ -328,7 +367,7 @@ const CurrencyConverter = () => {
             <p className="text-sm text-gray-600">Exchange Rate</p>
             <p className="text-lg font-semibold text-gray-900">
               {fromCurrency === toCurrency ? '1.00' : 
-               convertedAmount && amount ? (convertedAmount / amount).toFixed(4) : '---'}
+               convertedAmount !== null && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) !== 0 ? (convertedAmount / parseFloat(amount)).toFixed(4) : '---'}
             </p>
             <p className="text-xs text-gray-500">
               {isConverting ? 'Converting...' : 'Live Rate'}

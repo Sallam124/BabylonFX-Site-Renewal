@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Footer from '@/components/Footer'
 import { ExchangeRateProvider } from '@/context/ExchangeRateContext'
+import Navigation from '@/components/Navigation'
+import '@/utils/exchangeRateService'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,11 +26,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-white text-gray-900`} suppressHydrationWarning>
         <ExchangeRateProvider>
+          <Navigation />
           <main className="min-h-screen">
             {children}
           </main>
+          <Footer />
         </ExchangeRateProvider>
-        <Footer />
       </body>
     </html>
   )

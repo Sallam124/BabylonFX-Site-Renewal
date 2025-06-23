@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Navigation from '@/components/Navigation'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import AnimatedFallIn from '@/components/AnimatedFallIn'
@@ -96,7 +95,6 @@ const Contact = () => {
 
   return (
     <>
-      <Navigation />
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         {/* Hero Section */}
         <section className="relative py-16 px-4 sm:px-6 lg:px-8">

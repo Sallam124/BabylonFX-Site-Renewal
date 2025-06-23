@@ -1,5 +1,3 @@
-import Navigation from '@/components/Navigation'
-
 const teamMembers = [
   {
     name: 'John Smith',
@@ -24,7 +22,6 @@ const teamMembers = [
 const About = () => {
   return (
     <>
-      <Navigation />
       <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         {/* Hero Section */}
         <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">

@@ -30,7 +30,7 @@ interface ECBResponse {
 }
 
 // Mock exchange rates as fallback when APIs fail
-const mockRates: { [key: string]: number } = {
+export const mockRates: { [key: string]: number } = {
   'USD': 0.74,
   'EUR': 0.68,
   'GBP': 0.58,
@@ -100,15 +100,6 @@ export async function getExchangeRate(from: string, to: string): Promise<number>
 
   // If currencies are the same, return 1
   if (from === to) return 1;
-
-  // If base currency is CAD, use mock rates directly
-  if (from === 'CAD') {
-    const rate = mockRates[to];
-    if (rate) {
-      console.log(`Using mock rate for ${from}/${to}: ${rate}`);
-      return rate;
-    }
-  }
 
   // Step 1: Try ExchangeRate-API
   try {
@@ -265,4 +256,60 @@ export function getSupportedCurrencies(): string[] {
     'PLN', 'QAR', 'SGD', 'ZAR', 'SEK', 'TWD', 'THB', 'TTD', 'TND', 'TRY',
     'VND', 'HKD'
   ];
-} 
+}
+
+export const currencyNames: { [key: string]: string } = {
+  'USD': 'United States Dollar',
+  'EUR': 'Euro',
+  'GBP': 'British Pound',
+  'JPY': 'Japanese Yen',
+  'AUD': 'Australian Dollar',
+  'CNY': 'Chinese Yuan',
+  'DKK': 'Danish Krone',
+  'CHF': 'Swiss Franc',
+  'INR': 'Indian Rupee',
+  'MXN': 'Mexican Peso',
+  'BRL': 'Brazilian Real',
+  'KRW': 'South Korean Won',
+  'AED': 'UAE Dirham',
+  'RUB': 'Russian Ruble',
+  'SAR': 'Saudi Riyal',
+  'JOD': 'Jordanian Dinar',
+  'KWD': 'Kuwaiti Dinar',
+  'IQD': 'Iraqi Dinar',
+  'BSD': 'Bahamian Dollar',
+  'BHD': 'Bahraini Dinar',
+  'BOB': 'Bolivian Boliviano',
+  'BGN': 'Bulgarian Lev',
+  'COP': 'Colombian Peso',
+  'CRC': 'Costa Rican Colón',
+  'DOP': 'Dominican Peso',
+  'EGP': 'Egyptian Pound',
+  'ETB': 'Ethiopian Birr',
+  'GYD': 'Guyanese Dollar',
+  'HNL': 'Honduran Lempira',
+  'HUF': 'Hungarian Forint',
+  'IDR': 'Indonesian Rupiah',
+  'JMD': 'Jamaican Dollar',
+  'KES': 'Kenyan Shilling',
+  'NPR': 'Nepalese Rupee',
+  'NZD': 'New Zealand Dollar',
+  'NOK': 'Norwegian Krone',
+  'OMR': 'Omani Rial',
+  'PKR': 'Pakistani Rupee',
+  'PEN': 'Peruvian Sol',
+  'PHP': 'Philippine Peso',
+  'PLN': 'Polish Zloty',
+  'QAR': 'Qatari Riyal',
+  'SGD': 'Singapore Dollar',
+  'ZAR': 'South African Rand',
+  'SEK': 'Swedish Krona',
+  'TWD': 'Taiwan Dollar',
+  'THB': 'Thai Baht',
+  'TTD': 'Trinidad & Tobago Dollar',
+  'TND': 'Tunisian Dinar',
+  'TRY': 'Turkish Lira',
+  'VND': 'Vietnamese Dong',
+  'HKD': 'Hong Kong Dollar',
+  'CAD': 'Canadian Dollar',
+}; 

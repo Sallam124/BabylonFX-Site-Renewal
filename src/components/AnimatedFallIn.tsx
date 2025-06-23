@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useRef, useState } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
@@ -12,14 +12,15 @@ interface AnimatedFallInProps {
 export default function AnimatedFallIn({ children, delay = 0 }: AnimatedFallInProps) {
   const controls = useAnimation()
   const [ref, inView] = useInView({ threshold: 0.15 })
+  const [hasAnimated, setHasAnimated] = useState(false)
   
   React.useEffect(() => {
-    if (inView) {
+    if (inView && !hasAnimated) {
       controls.start({ opacity: 1, y: 0, transition: { duration: 0.7, delay } })
-    } else {
-      controls.start({ opacity: 0, y: 60 })
+      setHasAnimated(true)
     }
-  }, [controls, inView, delay])
+    // Do not reset animation if out of view
+  }, [controls, inView, delay, hasAnimated])
   
   return (
     <motion.div
