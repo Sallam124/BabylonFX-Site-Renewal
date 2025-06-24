@@ -5,7 +5,7 @@ interface PageContainerProps {
 
 export default function PageContainer({ children, className = '' }: PageContainerProps) {
   return (
-    <div className={`min-h-screen bg-gradient-to-b from-white to-gray-50 ${className}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-white via-gray-100 to-blue-100 ${className}`}>
       {children}
     </div>
   )

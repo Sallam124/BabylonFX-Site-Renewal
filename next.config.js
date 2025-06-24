@@ -1,66 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable Turbopack for faster development builds
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-
-  // Optimize webpack configuration
-  webpack: (config, { dev, isServer }) => {
-    // Only analyze bundle in production builds
-    if (process.env.ANALYZE === 'true' && !dev) {
-      const { BundleAnalyzerPlugin } = require('@next/bundle-analyzer')
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          openAnalyzer: false,
-        })
-      )
-    }
-
-    // Optimize for faster development builds
-    if (dev) {
-      // Reduce the number of modules processed
-      config.optimization = {
-        ...config.optimization,
-        removeAvailableModules: false,
-        removeEmptyChunks: false,
-        splitChunks: false,
-        minimize: false,
-        concatenateModules: false,
-      }
-      
-      // Reduce the number of modules processed
-      config.watchOptions = {
-        poll: 1000,
-        aggregateTimeout: 300,
-        ignored: ['**/node_modules', '**/.git', '**/.next'],
-      }
-    }
-
-    return config
-  },
-
-  // Optimize image handling
+  // Basic image optimization
   images: {
     formats: ['image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
-  },
-
-  // Reduce TypeScript checking overhead in development
-  typescript: {
-    ignoreBuildErrors: process.env.NODE_ENV === 'development',
-  },
-
-  // Optimize ESLint
-  eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
   },
 
   // Experimental features for better performance

@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { getBulkExchangeRates } from '@/utils/exchangeRateService'
 import PageContainer from '@/components/PageContainer'
-import PageHero from '@/components/PageHero'
 import Image from 'next/image'
+import { useExchangeRates } from '@/context/ExchangeRateContext'
 
 const images = ['/images/rates/rates.png', '/images/rates/rates2.png', '/images/rates/rates3.png', '/images/rates/rates4.png', '/images/rates/rates5.png']
 
@@ -44,12 +44,12 @@ interface RateData {
 
 export default function RatesPage() {
   const [rates, setRates] = useState<RateData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [hasMounted, setHasMounted] = useState(false)
 
   const spread = 0.005 // 0.5% spread
   const baseCurrency = 'CAD'
@@ -60,30 +60,7 @@ export default function RatesPage() {
   // Auto-refresh countdown
   const [countdown, setCountdown] = useState<number>(300); // 5 minutes in seconds
 
-  // Initialize rates data structure
-  useEffect(() => {
-    const initialRates = supportedCurrencies
-      .filter(currency => currency !== baseCurrency)
-      .map(currency => ({
-        currency,
-        countryName: countryNames[currency] || currency,
-        flag: getFlagPath(currency),
-        buyRate: 0,
-        sellRate: 0,
-        isLoading: true,
-        error: null
-      }))
-    setRates(initialRates)
-  }, [])
-
-  // Real-time clock ticker
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000) // Update every second
-
-    return () => clearInterval(timer)
-  }, [])
+  const { refreshRates: contextRefreshRates, isLoading: contextIsLoading, rates: contextRates, error: contextError, lastUpdated: contextLastUpdated } = useExchangeRates();
 
   // Image carousel - cycle through images every 2.5 seconds
   useEffect(() => {
@@ -112,7 +89,7 @@ export default function RatesPage() {
   const [visibleRows, setVisibleRows] = useState<number>(0);
   
   useEffect(() => {
-    if (isLoading || isRefreshing) {
+    if (contextIsLoading || isRefreshing) {
       setVisibleRows(0);
     } else if (rates.length > 0) {
       // Animate rows appearing one by one
@@ -122,11 +99,11 @@ export default function RatesPage() {
       
       return () => clearTimeout(timer);
     }
-  }, [isLoading, isRefreshing, rates.length]);
+  }, [contextIsLoading, isRefreshing, rates.length]);
 
   // Animate rows appearing one by one
   useEffect(() => {
-    if (visibleRows === 0 && rates.length > 0 && !isLoading && !isRefreshing) {
+    if (visibleRows === 0 && rates.length > 0 && !contextIsLoading && !isRefreshing) {
       let currentRow = 0;
       const interval = setInterval(() => {
         currentRow++;
@@ -138,57 +115,36 @@ export default function RatesPage() {
       
       return () => clearInterval(interval);
     }
-  }, [visibleRows, rates.length, isLoading, isRefreshing]);
+  }, [visibleRows, rates.length, contextIsLoading, isRefreshing]);
 
-  // Fetch live rates using bulk API call
-  const fetchRates = async (isRefresh = false) => {
-    if (isRefresh) {
-      setIsRefreshing(true)
-    } else {
-      setIsLoading(true)
-    }
-    setError(null)
-
-    try {
-      // Get all rates in a single API call
-      const targetCurrencies = rates.map(rate => rate.currency)
-      const bulkRates = await getBulkExchangeRates(baseCurrency, targetCurrencies)
-
-      // Update rates with live data
-      const updatedRates = rates.map(rate => {
-        const liveRate = bulkRates[rate.currency]
-        return {
-          ...rate,
-          buyRate: liveRate * (1 + spread),
-          sellRate: liveRate * (1 - spread),
+  // Update local rates when contextRates change
+  useEffect(() => {
+    if (contextRates) {
+      const updatedRates = supportedCurrencies
+        .filter(currency => currency !== baseCurrency)
+        .map(currency => ({
+          currency,
+          countryName: countryNames[currency] || currency,
+          flag: getFlagPath(currency),
+          buyRate: contextRates[currency] ? contextRates[currency] * (1 + spread) : 0,
+          sellRate: contextRates[currency] ? contextRates[currency] * (1 - spread) : 0,
           isLoading: false,
           error: null
-        }
-      })
-
+        }))
       setRates(updatedRates)
-      setLastUpdated(new Date())
-    } catch (err) {
-      setError('Failed to fetch exchange rates. Please try again.')
-      // Mark all rates as having errors
-      const errorRates = rates.map(rate => ({
-        ...rate,
-        isLoading: false,
-        error: 'Failed to fetch rate'
-      }))
-      setRates(errorRates)
-    } finally {
-      setIsLoading(false)
-      setIsRefreshing(false)
+      setLastUpdated(contextLastUpdated ? new Date(contextLastUpdated) : null)
+      setError(contextError)
     }
-  }
+  }, [contextRates, contextLastUpdated, contextError])
 
-  // Fetch rates on component mount
+  // Real-time clock ticker
   useEffect(() => {
-    if (rates.length > 0) {
-      fetchRates()
-    }
-  }, [rates.length])
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000) // Update every second
+
+    return () => clearInterval(timer)
+  }, [])
 
   // Auto-refresh every 5 minutes with reset capability
   useEffect(() => {
@@ -199,9 +155,9 @@ export default function RatesPage() {
 
     // Set new timer
     const interval = setInterval(() => {
-      if (!isLoading && !isRefreshing) {
+      if (!contextIsLoading && !isRefreshing) {
         console.log('Auto-refreshing rates...');
-        fetchRates(true)
+        if (contextRefreshRates) contextRefreshRates();
       }
     }, 5 * 60 * 1000) // 5 minutes
 
@@ -213,11 +169,11 @@ export default function RatesPage() {
         clearInterval(interval);
       }
     }
-  }, [isLoading, isRefreshing, lastUpdated]) // Reset timer when lastUpdated changes (manual refresh)
+  }, [contextIsLoading, isRefreshing, contextLastUpdated]) // Reset timer when lastUpdated changes (manual refresh)
 
   // Countdown timer
   useEffect(() => {
-    if (isLoading || isRefreshing) {
+    if (contextIsLoading || isRefreshing) {
       setCountdown(300); // Reset countdown when loading
       return;
     }
@@ -232,7 +188,7 @@ export default function RatesPage() {
     }, 1000);
 
     return () => clearInterval(countdownTimer);
-  }, [isLoading, isRefreshing, lastUpdated]);
+  }, [contextIsLoading, isRefreshing, contextLastUpdated]);
 
   // Format countdown
   const formatCountdown = (seconds: number) => {
@@ -241,9 +197,10 @@ export default function RatesPage() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const handleRefresh = () => {
-    console.log('Manual refresh triggered - resetting auto-refresh timer');
-    fetchRates(true)
+  const handleRefresh = async () => {
+    if (contextRefreshRates) {
+      await contextRefreshRates();
+    }
   }
 
   const formatTimeAgo = (date: Date) => {
@@ -256,59 +213,77 @@ export default function RatesPage() {
     return `${Math.floor(diffInSeconds / 86400)}d ago`
   }
 
+  useEffect(() => { setHasMounted(true); }, []);
+
+  // Auto-refresh if not all rates are loaded
+  useEffect(() => {
+    const expectedCount = supportedCurrencies.length - 1; // Exclude baseCurrency
+    const loadedCount = rates.filter(r => !r.isLoading && !r.error).length;
+    if (
+      hasMounted &&
+      !contextIsLoading &&
+      rates.length > 0 &&
+      loadedCount < expectedCount
+    ) {
+      // Debounce: only auto-refresh if not already triggered recently
+      const timeout = setTimeout(() => {
+        if (contextRefreshRates) contextRefreshRates();
+      }, 1500);
+      return () => clearTimeout(timeout);
+    }
+  }, [rates, contextIsLoading, hasMounted, contextRefreshRates]);
+
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-6 flex justify-center h-24 relative w-full max-w-md mx-auto">
-              {/* Image carousel with back-to-front fade */}
-              <div className="relative w-full h-full">
-                {images.map((image, index) => (
-                  <div
-                    key={image}
-                    className="absolute inset-0 flex items-center justify-center"
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-6 flex justify-center h-24 relative w-full max-w-md mx-auto">
+            {/* Image carousel with back-to-front fade */}
+            <div className="relative w-full h-full">
+              {images.map((image, index) => (
+                <div
+                  key={image}
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    opacity: index === currentImageIndex ? 1 : 0,
+                    transform: index === currentImageIndex ? 'scale(1) translateZ(0)' : 'scale(0.8) translateZ(-20px)',
+                    transition: 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: index === currentImageIndex ? 10 : 5,
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt={`Exchange Rates ${index + 1}`}
+                    className="h-16 w-auto md:h-24 rounded-lg shadow-lg object-contain max-w-full"
                     style={{
-                      opacity: index === currentImageIndex ? 1 : 0,
-                      transform: index === currentImageIndex ? 'scale(1) translateZ(0)' : 'scale(0.8) translateZ(-20px)',
-                      transition: 'opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                      zIndex: index === currentImageIndex ? 10 : 5,
+                      maxWidth: '100%',
+                      height: 'auto',
+                      maxHeight: '100%'
                     }}
-                  >
-                    <img
-                      src={image}
-                      alt={`Exchange Rates ${index + 1}`}
-                      className="h-16 w-auto md:h-24 rounded-lg shadow-lg object-contain max-w-full"
-                      style={{
-                        maxWidth: '100%',
-                        height: 'auto',
-                        maxHeight: '100%'
-                      }}
-                      onError={(e) => {
-                        console.error(`Failed to load image: ${image}`);
-                        e.currentTarget.style.display = 'none';
-                      }}
-                      onLoad={() => {
-                        console.log(`Successfully loaded image: ${image}`);
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
+                    onError={(e) => {
+                      console.error(`Failed to load image: ${image}`);
+                      e.currentTarget.style.display = 'none';
+                    }}
+                    onLoad={() => {
+                      console.log(`Successfully loaded image: ${image}`);
+                    }}
+                  />
+                </div>
+              ))}
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up">
-              Live Exchange Rates
-            </h1>
-            <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1">
-              Real-time. Transparent. Always current.
-            </p>
-            <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-500 fade-in-up-delay-2">
-              Live rates updated every minute. Scroll down to see today's best rates—trusted by thousands.
-            </p>
           </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up">
+            Live Exchange Rates
+          </h1>
+          <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1">
+            Real-time. Transparent. Always current.
+          </p>
+          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-500 fade-in-up-delay-2">
+            Live rates updated every minute. Scroll down to see today's best rates—trusted by thousands.
+          </p>
         </div>
-      </section>
+      </div>
 
       {/* Rates Table */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -328,7 +303,7 @@ export default function RatesPage() {
                 )}
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-400">
-                    Current time: {currentTime.toLocaleTimeString()}
+                    Current time: {hasMounted ? currentTime.toLocaleTimeString() : '--:--:--'}
                   </span>
                   <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
                 </div>
@@ -342,32 +317,20 @@ export default function RatesPage() {
             </div>
             <button
               onClick={handleRefresh}
-              disabled={isRefreshing || isLoading}
+              disabled={contextIsLoading || isRefreshing}
               className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg 
-                className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+                className={`w-4 h-4 ${contextIsLoading ? 'animate-spin' : ''}`} 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582M20 20v-5h-.581M5.582 9A7.003 7.003 0 0112 5c1.657 0 3.156.576 4.358 1.535M18.418 15A7.003 7.003 0 0112 19a6.978 6.978 0 01-4.358-1.535" />
               </svg>
-              <span>{isRefreshing ? 'Refreshing...' : 'Refresh Rates'}</span>
+              <span>{contextIsLoading ? 'Refreshing...' : 'Refresh Rates'}</span>
             </button>
           </div>
-
-          {/* Loading overlay for table */}
-          {(isLoading || isRefreshing) && (
-            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
-              <div className="flex flex-col items-center space-y-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                <p className="text-gray-600 font-medium">
-                  {isRefreshing ? 'Refreshing rates...' : 'Loading rates...'}
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Error message */}
           {error && (
@@ -458,14 +421,6 @@ export default function RatesPage() {
             </div>
           </div>
           
-          {/* Loading state for entire table */}
-          {isLoading && rates.length === 0 && (
-            <div className="mt-8 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading live exchange rates...</p>
-            </div>
-          )}
-
           <div className="mt-4 text-sm text-gray-500 text-center">
             <p>Rates are updated every 5 minutes automatically. Click "Refresh Rates" for immediate updates.</p>
             <p className="mt-1">For the most accurate rates, please contact us directly or visit one of our locations.</p>

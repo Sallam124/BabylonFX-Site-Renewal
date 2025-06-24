@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import PageContainer from '@/components/PageContainer'
-import PageHero from '@/components/PageHero'
 
 // Dynamically import LocationMap to reduce initial bundle size
 const LocationMap = dynamic(() => import('@/components/LocationMap'), {
@@ -103,17 +102,12 @@ const Contact = () => {
 
   return (
     <PageContainer>
-      <PageHero 
-        title="Contact Us" 
-        subtitle="Get in touch with our team for all your currency exchange needs" 
-      />
-
       {/* Map Section - now at the top */}
       <section className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white p-8 rounded-lg shadow-lg mb-12 fade-in-up">
             <div className="w-full">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Our Locations</h2>
+              <h2 className="font-extrabold text-5xl text-gray-800 mb-6 text-center">Our Locations</h2>
               <LocationMap />
             </div>
           </div>

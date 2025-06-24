@@ -24,57 +24,36 @@ export const mockRates: { [key: string]: number } = {
   'VND': 18250.3, 'HKD': 5.78
 };
 
-/**
- * Fetches real-time exchange rate between two currencies using our API route
- * @param from - Source currency code (e.g., 'CAD')
- * @param to - Target currency code (e.g., 'USD')
- * @returns Promise<number> - The exchange rate
- */
-export async function getExchangeRate(from: string, to: string): Promise<number> {
-  // Normalize currency codes to uppercase
-  from = from.toUpperCase();
-  to = to.toUpperCase();
+// Module-level cache
+let cachedRates: { [key: string]: number } | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in ms
 
-  // If currencies are the same, return 1
-  if (from === to) return 1;
-
-  try {
-    // Use our API route to avoid CORS issues
-    const timestamp = Date.now();
-    const url = `/api/exchange-rates?base=${from}&targets=${to}&_t=${timestamp}`;
-
-    const response = await axios.get<ExchangeRateResponse>(url, {
-      timeout: 5000 // 5 second timeout
-    });
-
-    if (!response.data?.rates?.[to]) {
-      throw new Error(`Rate not found for ${to}`);
-    }
-
-    const rate = response.data.rates[to];
-    return rate;
-  } catch (error) {
-    // Return mock rate as fallback
-    return mockRates[to] || 1;
-  }
+export function getCachedRates(): { [key: string]: number } | null {
+  return cachedRates;
 }
 
-/**
- * Fetches all exchange rates for a base currency in a single API call
- * @param baseCurrency - Base currency code (e.g., 'CAD')
- * @param targetCurrencies - Array of target currency codes
- * @returns Promise<{[key: string]: number}> - Object with currency codes as keys and rates as values
- */
-export async function getBulkExchangeRates(baseCurrency: string, targetCurrencies: string[]): Promise<{[key: string]: number}> {
+export function isCacheValid(): boolean {
+  return !!cachedRates && !!cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION);
+}
+
+export async function fetchAndCacheRates(baseCurrency: string, targetCurrencies: string[]): Promise<{ [key: string]: number }> {
+  // Always fetch fresh data and update cache
+  const rates = await _fetchBulkRates(baseCurrency, targetCurrencies);
+  cachedRates = rates;
+  cacheTimestamp = Date.now();
+  return rates;
+}
+
+async function _fetchBulkRates(baseCurrency: string, targetCurrencies: string[]): Promise<{[key: string]: number}> {
   // Normalize currency codes to uppercase
   baseCurrency = baseCurrency.toUpperCase();
   const normalizedTargets = targetCurrencies.map(c => c.toUpperCase());
 
   try {
-    // Use our API route to avoid CORS issues
-    const timestamp = Date.now();
+    // Use our API route without cache busting for better performance
     const targetsParam = normalizedTargets.join(',');
-    const url = `/api/exchange-rates?base=${baseCurrency}&targets=${targetsParam}&_t=${timestamp}`;
+    const url = `/api/exchange-rates?base=${baseCurrency}&targets=${targetsParam}`;
 
     const response = await axios.get<ExchangeRateResponse>(url, {
       timeout: 10000 // 10 second timeout for bulk request
@@ -103,6 +82,48 @@ export async function getBulkExchangeRates(baseCurrency: string, targetCurrencie
       rates[currency] = mockRates[currency] || 1;
     });
     return rates;
+  }
+}
+
+// Updated getBulkExchangeRates to use cache
+export async function getBulkExchangeRates(baseCurrency: string, targetCurrencies: string[]): Promise<{[key: string]: number}> {
+  if (isCacheValid()) {
+    return cachedRates!;
+  }
+  return await fetchAndCacheRates(baseCurrency, targetCurrencies);
+}
+
+/**
+ * Fetches real-time exchange rate between two currencies using our API route
+ * @param from - Source currency code (e.g., 'CAD')
+ * @param to - Target currency code (e.g., 'USD')
+ * @returns Promise<number> - The exchange rate
+ */
+export async function getExchangeRate(from: string, to: string): Promise<number> {
+  // Normalize currency codes to uppercase
+  from = from.toUpperCase();
+  to = to.toUpperCase();
+
+  // If currencies are the same, return 1
+  if (from === to) return 1;
+
+  try {
+    // Use our API route without cache busting for better performance
+    const url = `/api/exchange-rates?base=${from}&targets=${to}`;
+
+    const response = await axios.get<ExchangeRateResponse>(url, {
+      timeout: 5000 // 5 second timeout
+    });
+
+    if (!response.data?.rates?.[to]) {
+      throw new Error(`Rate not found for ${to}`);
+    }
+
+    const rate = response.data.rates[to];
+    return rate;
+  } catch (error) {
+    // Return mock rate as fallback
+    return mockRates[to] || 1;
   }
 }
 

@@ -64,6 +64,10 @@ const LocationMap = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [markers, setMarkers] = useState<{ [key: string]: { marker: google.maps.Marker, infoWindow: google.maps.InfoWindow } }>({})
   const [error, setError] = useState<string | null>(null)
+  const [geoDenied, setGeoDenied] = useState(false)
+  const [geoDeniedVisible, setGeoDeniedVisible] = useState(false)
+  const geoDeniedTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const geoDeniedFadeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const initMap = async () => {
@@ -158,7 +162,7 @@ const LocationMap = () => {
   }
 
   // Find nearest branch using geolocation
-  const handleFindNearest = () => {
+  const handleFindNearest = async () => {
     if (!map) return
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by your browser.')
@@ -166,6 +170,14 @@ const LocationMap = () => {
     }
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        setGeoDenied(false);
+        setGeoDeniedVisible(false);
+        if (geoDeniedTimeoutRef.current) {
+          clearTimeout(geoDeniedTimeoutRef.current);
+        }
+        if (geoDeniedFadeTimeoutRef.current) {
+          clearTimeout(geoDeniedFadeTimeoutRef.current);
+        }
         const userLat = position.coords.latitude
         const userLng = position.coords.longitude
         // Find nearest location
@@ -191,15 +203,58 @@ const LocationMap = () => {
         setSelectedLocation(nearest)
       },
       (err) => {
-        setError('Unable to retrieve your location.')
+        if (err.code === 1) {
+          setGeoDenied(true);
+          setGeoDeniedVisible(true);
+          if (geoDeniedTimeoutRef.current) {
+            clearTimeout(geoDeniedTimeoutRef.current);
+          }
+          if (geoDeniedFadeTimeoutRef.current) {
+            clearTimeout(geoDeniedFadeTimeoutRef.current);
+          }
+          geoDeniedTimeoutRef.current = setTimeout(() => {
+            setGeoDenied(false);
+            geoDeniedFadeTimeoutRef.current = setTimeout(() => {
+              setGeoDeniedVisible(false);
+            }, 500);
+          }, 4000);
+        }
       }
     )
   }
 
+  // Add a handler to reset the map view
+  const handleShowAllBranches = () => {
+    if (map) {
+      map.setCenter({ lat: 43.6532, lng: -79.3832 }); // Toronto center
+      map.setZoom(8);
+      // Close all info windows
+      Object.values(markers).forEach(({ infoWindow: iw }) => iw.close());
+      setSelectedLocation(null);
+    }
+  };
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (geoDeniedTimeoutRef.current) {
+        clearTimeout(geoDeniedTimeoutRef.current);
+      }
+      if (geoDeniedFadeTimeoutRef.current) {
+        clearTimeout(geoDeniedFadeTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (error) {
     return (
-      <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
-        <div className="text-center p-8">
+      <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center relative">
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-full max-w-md z-10">
+          <div className="bg-red-100 border border-red-400 text-red-800 font-bold rounded-lg px-6 py-4 shadow-lg text-center text-lg">
+            {error}
+          </div>
+        </div>
+        <div className="text-center p-8 opacity-30">
           <p className="text-red-600 mb-4">{error}</p>
           <p className="text-gray-600">Please refresh the page to try again.</p>
         </div>
@@ -213,14 +268,24 @@ const LocationMap = () => {
       
       {/* Location List Overlay */}
       <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-4 max-w-xs">
-        <h3 className="font-bold text-lg mb-2">Our Locations</h3>
         <button
           onClick={handleFindNearest}
           className="mb-4 w-full bg-primary text-white font-semibold py-2 rounded hover:bg-secondary transition-colors"
         >
           Find Nearest Branch
         </button>
-        <div className="space-y-2">
+        {geoDeniedVisible && (
+          <div className={`mb-2 text-red-700 bg-red-100 border border-red-300 rounded px-3 py-2 text-center text-sm font-semibold transition-all duration-500 ${geoDenied ? 'opacity-100 max-h-20' : 'opacity-0 max-h-0 overflow-hidden'}`}>
+            Location access denied. Please grant location access in your browser settings to use this feature.
+          </div>
+        )}
+        <button
+          onClick={handleShowAllBranches}
+          className="mb-6 w-full bg-gray-200 text-gray-800 font-semibold py-2 rounded hover:bg-gray-300 transition-colors"
+        >
+          Show All Branches
+        </button>
+        <div className="space-y-4">
           {locations.map((location) => (
             <button
               key={location.name}

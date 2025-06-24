@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { formatTimeAgo } from '@/utils/timeUtils'
 import { getExchangeRate } from '@/utils/exchangeRateService'
+import { useExchangeRates } from '@/context/ExchangeRateContext'
 
 interface CurrencyOption {
   value: string
@@ -168,35 +169,63 @@ const CurrencyConverter = () => {
     }
   }, [])
 
+  // Add context usage
+  const { rates, isLoading: ratesLoading, error: ratesError, refreshRates, lastUpdated: contextLastUpdated } = useExchangeRates();
+
+  // Ensure rates are fetched if not loaded
+  useEffect(() => {
+    if (!rates && !ratesLoading && refreshRates) {
+      refreshRates();
+    }
+  }, [rates, ratesLoading, refreshRates]);
+
   // Extract conversion logic to a separate function
   const handleConvert = async (numericAmount?: number) => {
-    const amountToConvert = numericAmount !== undefined ? numericAmount : parseFloat(amount)
+    const amountToConvert = numericAmount !== undefined ? numericAmount : parseFloat(amount);
     if (!amount || amountToConvert <= 0 || isNaN(amountToConvert)) {
-      setConvertedAmount(null)
-      setIsConverting(false)
-      return
+      setConvertedAmount(null);
+      setIsConverting(false);
+      return;
     }
     if (fromCurrency === toCurrency) {
-      setConvertedAmount(amountToConvert)
-      setLastUpdated(new Date().toISOString())
-      setIsConverting(false)
-      return
+      setConvertedAmount(amountToConvert);
+      setLastUpdated(new Date().toISOString());
+      setIsConverting(false);
+      return;
     }
-
-    setIsConverting(true)
-    setError(null)
-    
+    setIsConverting(true);
+    setError(null);
+    // Use cached CAD-based rates for any pair
+    if (rates) {
+      const cadToFrom = fromCurrency === 'CAD' ? 1 : rates[fromCurrency];
+      const cadToTo = toCurrency === 'CAD' ? 1 : rates[toCurrency];
+      if (cadToFrom && cadToTo) {
+        let rate;
+        if (fromCurrency === 'CAD') {
+          rate = cadToTo;
+        } else if (toCurrency === 'CAD') {
+          rate = 1 / cadToFrom;
+        } else {
+          rate = cadToTo / cadToFrom;
+        }
+        setConvertedAmount(amountToConvert * rate);
+        setLastUpdated(contextLastUpdated);
+        setIsConverting(false);
+        return;
+      }
+    }
+    // Fallback: fetch directly if not in cache
     try {
-      const rate = await getExchangeRate(fromCurrency, toCurrency)
-      setConvertedAmount(amountToConvert * rate)
-      setLastUpdated(new Date().toISOString())
+      const rate = await getExchangeRate(fromCurrency, toCurrency);
+      setConvertedAmount(amountToConvert * rate);
+      setLastUpdated(new Date().toISOString());
     } catch (err) {
-      setError('Failed to fetch rate.')
-      setConvertedAmount(null)
+      setError('Failed to fetch rate.');
+      setConvertedAmount(null);
     } finally {
-      setIsConverting(false)
+      setIsConverting(false);
     }
-  }
+  };
 
   useEffect(() => {
     const debounceHandler = setTimeout(() => {
@@ -240,40 +269,46 @@ const CurrencyConverter = () => {
 
   // Refresh handler - improved version
   const handleRefresh = async () => {
-    console.log('Refresh button clicked - starting refresh...')
-    
-    // Reset to default values
-    setAmount('100')
-    setFromCurrency('CAD')
-    setToCurrency('USD')
-    setConvertedAmount(null)
-    setError(null)
-    setLastUpdated(null)
-    setIsConverting(true)
-    
-    // Force a fresh conversion
-    try {
-      console.log('Fetching fresh rate for CAD to USD...')
-      const rate = await getExchangeRate('CAD', 'USD')
-      console.log('New rate received:', rate)
-      const newAmount = 100 * rate
-      setConvertedAmount(newAmount)
-      setLastUpdated(new Date().toISOString())
-      console.log('Refresh completed successfully')
-    } catch (err) {
-      console.error('Refresh failed:', err)
-      setError('Failed to fetch rate.')
-      setConvertedAmount(null)
-    } finally {
-      setIsConverting(false)
+    if (refreshRates) {
+      setIsConverting(true);
+      setError(null);
+      await refreshRates();
+      setIsConverting(false);
+      // Optionally, re-run conversion after refresh
+      handleConvert();
     }
-  }
+  };
 
   useEffect(() => {
     if (isConverting && convertedAmount !== null) {
       setIsConverting(false);
     }
   }, [isConverting, convertedAmount]);
+
+  // Helper to get the current exchange rate for the selected pair
+  const getCurrentRate = () => {
+    if (fromCurrency === toCurrency) return 1;
+    if (rates) {
+      const cadToFrom = fromCurrency === 'CAD' ? 1 : rates[fromCurrency];
+      const cadToTo = toCurrency === 'CAD' ? 1 : rates[toCurrency];
+      if (cadToFrom && cadToTo) {
+        if (fromCurrency === 'CAD') return cadToTo;
+        if (toCurrency === 'CAD') return 1 / cadToFrom;
+        return cadToTo / cadToFrom;
+      }
+    }
+    return null;
+  };
+
+  if (ratesLoading || !rates) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-gray-600 text-lg font-semibold">Loading live exchange rates...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
@@ -388,24 +423,33 @@ const CurrencyConverter = () => {
 
       {/* Conversion Result */}
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-sm text-gray-600">Converted Amount</p>
-            <p className="text-3xl font-bold text-gray-900">
-              {convertedAmount !== null && amount && !isNaN(parseFloat(amount)) ? convertedAmount.toFixed(2) : '---'}
-            </p>
-            <p className="text-sm text-gray-500">{toCurrency}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">Exchange Rate</p>
-            <p className="text-lg font-semibold text-gray-900">
-              {fromCurrency === toCurrency ? '1.00' : 
-               convertedAmount !== null && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) !== 0 ? (convertedAmount / parseFloat(amount)).toFixed(4) : '---'}
-            </p>
-            <p className="text-xs text-gray-500">
-              {isConverting ? 'Converting...' : 'Live Rate'}
-            </p>
-          </div>
+        <div className="flex justify-between items-center min-h-[80px]">
+          {isConverting || convertedAmount === null ? (
+            <div className="flex flex-col items-center justify-center w-full">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
+              <p className="text-gray-600 text-base font-medium">Converting...</p>
+            </div>
+          ) : (
+            <>
+              <div>
+                <p className="text-sm text-gray-600">Converted Amount</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {convertedAmount !== null && amount && !isNaN(parseFloat(amount)) ? convertedAmount.toFixed(2) : '---'}
+                </p>
+                <p className="text-sm text-gray-500">{toCurrency}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-600">Exchange Rate</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {(() => {
+                    const rate = getCurrentRate();
+                    return rate !== null ? rate.toFixed(4) : '---';
+                  })()}
+                </p>
+                <p className="text-xs text-gray-500">Live Rate</p>
+              </div>
+            </>
+          )}
         </div>
         
         {lastUpdated && (

@@ -1,5 +1,4 @@
 import PageContainer from '@/components/PageContainer'
-import PageHero from '@/components/PageHero'
 
 const services = [
   {
@@ -43,10 +42,14 @@ const services = [
 export default function Services() {
   return (
     <PageContainer>
-      <PageHero 
-        title="Our Services" 
-        subtitle="Comprehensive currency exchange solutions tailored to your needs" 
-      />
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up">
+          Our Services
+        </h1>
+        <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1">
+          Discover the range of services we offer to meet your currency exchange needs
+        </p>
+      </div>
 
       {/* Services Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -72,22 +75,6 @@ export default function Services() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4 fade-in-up">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 fade-in-up-delay-1">
-            Visit our location or contact us to learn more about our services
-          </p>
-          <a
-            href="/contact"
-            className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-3 px-8 rounded-md transition-colors duration-300 fade-in-up-delay-2"
-          >
-            Contact Us
-          </a>
         </div>
       </section>
     </PageContainer>

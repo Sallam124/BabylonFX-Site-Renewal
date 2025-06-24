@@ -1,7 +1,7 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getExchangeRate } from '@/utils/exchangeRateService';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { getBulkExchangeRates, getCachedRates, isCacheValid, fetchAndCacheRates, getSupportedCurrencies } from '@/utils/exchangeRateService';
 
 interface ExchangeRateContextType {
   rates: { [key: string]: number } | null;
@@ -25,65 +25,68 @@ export const ExchangeRateProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [rates, setRates] = useState<{ [key: string]: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<string>(new Date().toISOString());
+  const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchRates = async () => {
+  // Helper to load rates from cache or fetch if needed
+  const loadRates = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
-      setError(null);
-
       const baseCurrency = 'CAD';
-      const supportedCurrencies = [
-        'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CNY', 'DKK', 'CHF', 'INR',
-        'MXN', 'BRL', 'KRW', 'AED', 'RUB', 'SAR', 'JOD', 'KWD', 'IQD', 'BSD',
-        'BHD', 'BOB', 'BGN', 'COP', 'CRC', 'DOP', 'EGP', 'ETB', 'GYD', 'HNL',
-        'HUF', 'IDR', 'JMD', 'KES', 'NPR', 'NZD', 'NOK', 'OMR', 'PKR', 'PEN',
-        'PHP', 'PLN', 'QAR', 'SGD', 'ZAR', 'SEK', 'TWD', 'THB', 'TTD', 'TND',
-        'TRY', 'VND', 'HKD'
-      ];
-
-      const newRates: { [key: string]: number } = {};
-
-      // Fetch rates for all supported currencies
-      for (const currency of supportedCurrencies) {
-        if (currency === baseCurrency) continue;
-
-        try {
-          const rate = await getExchangeRate(baseCurrency, currency);
-          newRates[currency] = rate;
-        } catch (error) {
-          console.error(`Failed to fetch rate for ${currency}:`, error);
-          // Continue with other currencies even if one fails
-        }
+      const supportedCurrencies = getSupportedCurrencies().filter(c => c !== baseCurrency);
+      let newRates: { [key: string]: number };
+      if (isCacheValid()) {
+        newRates = getCachedRates()!;
+      } else {
+        newRates = await fetchAndCacheRates(baseCurrency, supportedCurrencies);
       }
-      
       setRates(newRates);
-      setLastUpdated(new Date().toISOString());
+      setLastUpdated(Date.now());
     } catch (error) {
-      console.error('Error fetching exchange rates:', error);
       setError(error instanceof Error ? error.message : 'Failed to fetch exchange rates');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const refreshRates = async () => {
-    await fetchRates();
-  };
-
-  useEffect(() => {
-    fetchRates(); // Fetch immediately on mount
-    // Removed auto-refresh interval to prevent unwanted API calls
-    // The rates page has its own auto-refresh mechanism
   }, []);
 
-  const value = {
+  // Manual refresh handler (always fetch and cache)
+  const refreshRates = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const baseCurrency = 'CAD';
+      const supportedCurrencies = getSupportedCurrencies().filter(c => c !== baseCurrency);
+      const newRates = await fetchAndCacheRates(baseCurrency, supportedCurrencies);
+      setRates(newRates);
+      setLastUpdated(Date.now());
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to fetch exchange rates');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // On mount, load from cache or fetch
+  useEffect(() => {
+    loadRates();
+    // Set up 5 min auto-refresh
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      refreshRates();
+    }, 5 * 60 * 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [loadRates, refreshRates]);
+
+  const value = useMemo(() => ({
     rates,
     isLoading,
     error,
-    lastUpdated,
+    lastUpdated: new Date(lastUpdated).toISOString(),
     refreshRates
-  };
+  }), [rates, isLoading, error, lastUpdated, refreshRates]);
 
   return (
     <ExchangeRateContext.Provider value={value}>

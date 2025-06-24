@@ -36,24 +36,27 @@ export async function GET(request: NextRequest) {
 
     // If no target currencies specified, return all mock rates
     if (normalizedTargets.length === 0) {
-      return NextResponse.json({
+      return new NextResponse(JSON.stringify({
         base: normalizedBase,
         rates: mockRates,
         date: new Date().toISOString(),
         source: 'mock'
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 's-maxage=600, stale-while-revalidate=1200'
+        }
       });
     }
 
     try {
-      // Use ExchangeRate-API to get all rates at once with cache busting
-      const timestamp = Date.now();
-      const url = `https://api.exchangerate-api.com/v4/latest/${normalizedBase}?_t=${timestamp}`;
+      // Use ExchangeRate-API without cache busting for better performance
+      const url = `https://api.exchangerate-api.com/v4/latest/${normalizedBase}`;
 
       const response = await axios.get<ExchangeRateResponse>(url, {
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
+          'Content-Type': 'application/json'
         },
         timeout: 10000 // 10 second timeout for bulk request
       });
@@ -73,11 +76,16 @@ export async function GET(request: NextRequest) {
         }
       });
 
-      return NextResponse.json({
+      return new NextResponse(JSON.stringify({
         base: normalizedBase,
         rates,
         date: response.data.date,
         source: 'api'
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 's-maxage=600, stale-while-revalidate=1200'
+        }
       });
     } catch (error) {
       // Return mock rates as fallback
@@ -86,18 +94,26 @@ export async function GET(request: NextRequest) {
         rates[currency] = mockRates[currency] || 1;
       });
 
-      return NextResponse.json({
+      return new NextResponse(JSON.stringify({
         base: normalizedBase,
         rates,
         date: new Date().toISOString(),
         source: 'mock'
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 's-maxage=300, stale-while-revalidate=600'
+        }
       });
     }
   } catch (error) {
     console.error('Exchange rate API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch exchange rates' },
-      { status: 500 }
-    );
+    return new NextResponse(JSON.stringify({ error: 'Failed to fetch exchange rates' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+      }
+    });
   }
 } 
