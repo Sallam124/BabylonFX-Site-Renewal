@@ -34,7 +34,7 @@
     "sourceMap": false,
     "removeComments": false,
     "noEmitOnError": false,
-    "preserveConstEnums": false,
+    "preserveConstEnums": true,
     "importHelpers": false,
     "downlevelIteration": false,
     "experimentalDecorators": false,
