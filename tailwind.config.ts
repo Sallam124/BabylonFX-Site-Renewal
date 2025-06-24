@@ -6,6 +6,10 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Optimize for faster compilation
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {
@@ -37,6 +41,10 @@ const config: Config = {
     },
   },
   plugins: [],
+  // Optimize for development
+  corePlugins: {
+    preflight: true,
+  },
 }
 
 export default config 

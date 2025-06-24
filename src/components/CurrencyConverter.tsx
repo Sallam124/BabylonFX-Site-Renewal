@@ -56,7 +56,8 @@ const CurrencySelect = ({
               alt={`${value} flag`}
               width={24}
               height={18}
-              className="rounded-sm"
+              className="rounded-sm w-6 h-auto"
+              style={{ width: '24px', height: 'auto' }}
             />
           </div>
           <span className="text-base">{value}</span>
@@ -84,7 +85,8 @@ const CurrencySelect = ({
                   alt={`${option.value} flag`}
                   width={20}
                   height={15}
-                  className="rounded-sm"
+                  className="rounded-sm w-5 h-auto"
+                  style={{ width: '20px', height: 'auto' }}
                 />
                 <span className="text-sm">{option.value}</span>
               </button>
@@ -225,19 +227,22 @@ const CurrencyConverter = () => {
     flag: getFlagPath(currency.code)
   }))
 
-  // Periodically refresh if price is not available
-  useEffect(() => {
-    if (convertedAmount === null && !isConverting && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0) {
-      const interval = setInterval(() => {
-        handleConvert()
-      }, 1000)
-      return () => clearInterval(interval)
-    }
-    return undefined
-  }, [convertedAmount, isConverting, amount, fromCurrency, toCurrency])
+  // Removed auto-refresh interval to prevent unwanted API calls
+  // Users can manually refresh when needed
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 && !isConverting) {
+  //       handleConvert(parseFloat(amount))
+  //     }
+  //   }, 30000) // Refresh every 30 seconds
+  //   return () => clearInterval(interval)
+  // }, [amount, fromCurrency, toCurrency, isConverting])
 
-  // Refresh handler
-  const handleRefresh = () => {
+  // Refresh handler - improved version
+  const handleRefresh = async () => {
+    console.log('Refresh button clicked - starting refresh...')
+    
+    // Reset to default values
     setAmount('100')
     setFromCurrency('CAD')
     setToCurrency('USD')
@@ -245,8 +250,25 @@ const CurrencyConverter = () => {
     setError(null)
     setLastUpdated(null)
     setIsConverting(true)
-    setTimeout(() => handleConvert(100), 0)
+    
+    // Force a fresh conversion
+    try {
+      console.log('Fetching fresh rate for CAD to USD...')
+      const rate = await getExchangeRate('CAD', 'USD')
+      console.log('New rate received:', rate)
+      const newAmount = 100 * rate
+      setConvertedAmount(newAmount)
+      setLastUpdated(new Date().toISOString())
+      console.log('Refresh completed successfully')
+    } catch (err) {
+      console.error('Refresh failed:', err)
+      setError('Failed to fetch rate.')
+      setConvertedAmount(null)
+    } finally {
+      setIsConverting(false)
+    }
   }
+
   useEffect(() => {
     if (isConverting && convertedAmount !== null) {
       setIsConverting(false);
@@ -258,11 +280,22 @@ const CurrencyConverter = () => {
         <h2 className="text-2xl font-bold text-gray-900">Currency Converter</h2>
         <button
           onClick={handleRefresh}
-          className="ml-4 p-2 text-gray-400 hover:text-blue-600 transition-colors"
+          disabled={isConverting}
+          className={`ml-4 p-2 rounded-lg transition-all duration-200 ${
+            isConverting 
+              ? 'text-gray-300 cursor-not-allowed' 
+              : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
+          }`}
           title="Refresh Converter"
           aria-label="Refresh Converter"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            className={`w-6 h-6 ${isConverting ? 'animate-spin' : ''}`}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582M20 20v-5h-.581M5.582 9A7.003 7.003 0 0112 5c1.657 0 3.156.576 4.358 1.535M18.418 15A7.003 7.003 0 0112 19a6.978 6.978 0 01-4.358-1.535" />
           </svg>
         </button>

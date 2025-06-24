@@ -73,10 +73,8 @@ export const ExchangeRateProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   useEffect(() => {
     fetchRates(); // Fetch immediately on mount
-    const interval = setInterval(fetchRates, 60000); // Update rates every minute
-    return () => {
-      clearInterval(interval);
-    };
+    // Removed auto-refresh interval to prevent unwanted API calls
+    // The rates page has its own auto-refresh mechanism
   }, []);
 
   const value = {

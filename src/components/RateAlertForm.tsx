@@ -1,7 +1,28 @@
 'use client'
 
 import React, { useState } from 'react'
-import { currencyNames } from '@/utils/exchangeRateService'
+
+// Simplified currency names (only the ones we actually use)
+const currencyNames: { [key: string]: string } = {
+  'CAD': 'Canadian Dollar', 'USD': 'United States Dollar', 'EUR': 'Euro', 
+  'GBP': 'British Pound', 'JPY': 'Japanese Yen', 'AUD': 'Australian Dollar',
+  'CNY': 'Chinese Yuan', 'DKK': 'Danish Krone', 'CHF': 'Swiss Franc',
+  'INR': 'Indian Rupee', 'MXN': 'Mexican Peso', 'BRL': 'Brazilian Real',
+  'KRW': 'South Korean Won', 'AED': 'UAE Dirham', 'RUB': 'Russian Ruble',
+  'SAR': 'Saudi Riyal', 'JOD': 'Jordanian Dinar', 'KWD': 'Kuwaiti Dinar',
+  'IQD': 'Iraqi Dinar', 'BSD': 'Bahamian Dollar', 'BHD': 'Bahraini Dinar',
+  'BOB': 'Bolivian Boliviano', 'BGN': 'Bulgarian Lev', 'COP': 'Colombian Peso',
+  'CRC': 'Costa Rican Colon', 'DOP': 'Dominican Peso', 'EGP': 'Egyptian Pound',
+  'ETB': 'Ethiopian Birr', 'GYD': 'Guyanese Dollar', 'HNL': 'Honduran Lempira',
+  'HUF': 'Hungarian Forint', 'IDR': 'Indonesian Rupiah', 'JMD': 'Jamaican Dollar',
+  'KES': 'Kenyan Shilling', 'NPR': 'Nepalese Rupee', 'NZD': 'New Zealand Dollar',
+  'NOK': 'Norwegian Krone', 'OMR': 'Omani Rial', 'PKR': 'Pakistani Rupee',
+  'PEN': 'Peruvian Sol', 'PHP': 'Philippine Peso', 'PLN': 'Polish Zloty',
+  'QAR': 'Qatari Riyal', 'SGD': 'Singapore Dollar', 'ZAR': 'South African Rand',
+  'SEK': 'Swedish Krona', 'TWD': 'Taiwan Dollar', 'THB': 'Thai Baht',
+  'TTD': 'Trinidad and Tobago Dollar', 'TND': 'Tunisian Dinar', 'TRY': 'Turkish Lira',
+  'VND': 'Vietnamese Dong', 'HKD': 'Hong Kong Dollar'
+}
 
 const RateAlertForm = ({ supportedCurrencies }: { supportedCurrencies: string[] }) => {
   const [buyCurrency, setBuyCurrency] = useState('USD')

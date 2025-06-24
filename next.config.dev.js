@@ -1,31 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable Turbopack for faster development builds
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
-
-  // Optimize webpack configuration
+  // Enable SWC minification for faster builds
+  swcMinify: true,
+  
+  // Optimize webpack configuration for development
   webpack: (config, { dev, isServer }) => {
-    // Only analyze bundle in production builds
-    if (process.env.ANALYZE === 'true' && !dev) {
-      const { BundleAnalyzerPlugin } = require('@next/bundle-analyzer')
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          openAnalyzer: false,
-        })
-      )
-    }
-
-    // Optimize for faster development builds
+    // Development-specific optimizations
     if (dev) {
-      // Reduce the number of modules processed
+      // Disable expensive optimizations in development
       config.optimization = {
         ...config.optimization,
         removeAvailableModules: false,
@@ -34,6 +16,9 @@ const nextConfig = {
         minimize: false,
         concatenateModules: false,
       }
+      
+      // Faster source maps for development
+      config.devtool = 'eval-cheap-module-source-map'
       
       // Reduce the number of modules processed
       config.watchOptions = {
@@ -53,18 +38,20 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
 
-  // Reduce TypeScript checking overhead in development
+  // Disable TypeScript checking in development for faster builds
   typescript: {
-    ignoreBuildErrors: process.env.NODE_ENV === 'development',
+    ignoreBuildErrors: true,
   },
 
-  // Optimize ESLint
+  // Disable ESLint in development for faster builds
   eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
+    ignoreDuringBuilds: true,
   },
 
   // Experimental features for better performance
   experimental: {
+    // Enable SWC for faster compilation
+    swcTraceProfiling: false,
     // Optimize package imports
     optimizePackageImports: ['axios', 'react', 'react-dom'],
   },
@@ -72,8 +59,8 @@ const nextConfig = {
   // Compiler optimizations
   compiler: {
     // Remove console logs in production
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: false,
   },
 }
 
-module.exports = nextConfig
+module.exports = nextConfig 

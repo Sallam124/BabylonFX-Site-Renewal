@@ -1,5 +1,19 @@
-import CurrencyConverter from '@/components/CurrencyConverter'
+import dynamic from 'next/dynamic'
 import PageContainer from '@/components/PageContainer'
+
+// Dynamically import CurrencyConverter to reduce initial bundle size
+const CurrencyConverter = dynamic(() => import('@/components/CurrencyConverter'), {
+  loading: () => (
+    <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-200 rounded mb-4"></div>
+        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded mb-6"></div>
+        <div className="h-32 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  )
+})
 
 export default function Home() {
   // useEffect(() => {

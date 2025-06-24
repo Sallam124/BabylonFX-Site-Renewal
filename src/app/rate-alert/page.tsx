@@ -1,9 +1,26 @@
 'use client'
-import RateAlertForm from '@/components/RateAlertForm'
+import dynamic from 'next/dynamic'
 import PageContainer from '@/components/PageContainer'
 import PageHero from '@/components/PageHero'
 
-// Define supported currencies directly in the page
+// Dynamically import RateAlertForm to reduce initial bundle size
+const RateAlertForm = dynamic(() => import('@/components/RateAlertForm'), {
+  loading: () => (
+    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mt-8 max-w-xl w-full mx-auto">
+      <div className="animate-pulse">
+        <div className="h-6 bg-gray-200 rounded mb-4"></div>
+        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded mb-6"></div>
+        <div className="h-10 bg-gray-200 rounded mb-4"></div>
+        <div className="h-10 bg-gray-200 rounded mb-4"></div>
+        <div className="h-10 bg-gray-200 rounded mb-4"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  )
+})
+
+// Define supported currencies directly in the page (no context needed)
 const supportedCurrencies = [
   'CAD', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CNY', 'DKK', 'CHF', 'INR',
   'MXN', 'BRL', 'KRW', 'AED', 'RUB', 'SAR', 'JOD', 'KWD', 'IQD', 'BSD',

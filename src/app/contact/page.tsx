@@ -2,9 +2,19 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import PageContainer from '@/components/PageContainer'
 import PageHero from '@/components/PageHero'
-import LocationMap from '@/components/LocationMap'
+
+// Dynamically import LocationMap to reduce initial bundle size
+const LocationMap = dynamic(() => import('@/components/LocationMap'), {
+  loading: () => (
+    <div className="w-full h-[400px] bg-gray-200 flex items-center justify-center rounded-lg">
+      <p className="text-gray-500">Loading map...</p>
+    </div>
+  ),
+  ssr: false
+})
 
 const locations = [
   {
