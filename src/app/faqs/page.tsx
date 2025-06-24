@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import PageContainer from '@/components/PageContainer'
+import PageHero from '@/components/PageHero'
 
 const faqs = [
   {
@@ -53,20 +55,11 @@ const FAQs = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
-              Frequently Asked Questions
-            </h1>
-            <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-              Find answers to common questions about our services
-            </p>
-          </div>
-        </div>
-      </section>
+    <PageContainer>
+      <PageHero 
+        title="Frequently Asked Questions" 
+        subtitle="Find answers to common questions about our services" 
+      />
 
       {/* FAQs Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -75,7 +68,8 @@ const FAQs = () => {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+                className="bg-white rounded-lg shadow-md overflow-hidden fade-in-up"
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <button
                   className="w-full px-6 py-4 text-left focus:outline-none"
@@ -104,21 +98,21 @@ const FAQs = () => {
       {/* Contact Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-primary mb-4">
+          <h2 className="text-3xl font-bold text-primary mb-4 fade-in-up">
             Still Have Questions?
           </h2>
-          <p className="text-xl mb-8">
+          <p className="text-xl mb-8 fade-in-up-delay-1">
             Our team is here to help. Contact us for more information.
           </p>
           <a
             href="/contact"
-            className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-md transition-colors duration-300"
+            className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-md transition-colors duration-300 fade-in-up-delay-2"
           >
             Contact Us
           </a>
         </div>
       </section>
-    </div>
+    </PageContainer>
   )
 }
 

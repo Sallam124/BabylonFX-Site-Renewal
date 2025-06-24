@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import TimeAgo from './TimeAgo'
+import { formatTimeAgo } from '@/utils/timeUtils'
 import { getExchangeRate } from '@/utils/exchangeRateService'
 
 interface CurrencyOption {
@@ -378,7 +378,7 @@ const CurrencyConverter = () => {
         {lastUpdated && (
           <div className="mt-4 pt-4 border-t border-blue-200">
             <p className="text-xs text-gray-500">
-              Last updated: <TimeAgo timestamp={lastUpdated} />
+              Last updated: {formatTimeAgo(lastUpdated)}
             </p>
           </div>
         )}

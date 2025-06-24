@@ -1,3 +1,6 @@
+import PageContainer from '@/components/PageContainer'
+import PageHero from '@/components/PageHero'
+
 const services = [
   {
     title: 'Currency Exchange',
@@ -39,64 +42,54 @@ const services = [
 
 export default function Services() {
   return (
-    <>
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-        {/* Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center">
-              <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
-                Our Services
-              </h1>
-              <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                Comprehensive currency exchange solutions tailored to your needs
-              </p>
-            </div>
-          </div>
-        </section>
+    <PageContainer>
+      <PageHero 
+        title="Our Services" 
+        subtitle="Comprehensive currency exchange solutions tailored to your needs" 
+      />
 
-        {/* Services Grid */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {services.map((service, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                >
-                  <div className="text-4xl mb-4">{service.icon}</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
-                  {service.title === 'Rate Alerts' && (
-                    <a
-                      href="/rate-alert"
-                      className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-md transition-colors duration-300 mt-2"
-                    >
-                      Set a Rate Alert
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
+      {/* Services Grid */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="text-4xl mb-4">{service.icon}</div>
+                <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                {service.title === 'Rate Alerts' && (
+                  <a
+                    href="/rate-alert"
+                    className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-md transition-colors duration-300 mt-2"
+                  >
+                    Set a Rate Alert
+                  </a>
+                )}
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Call to Action */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-white">
-          <div className="max-w-7xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-xl mb-8">
-              Visit our location or contact us to learn more about our services
-            </p>
-            <a
-              href="/contact"
-              className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-3 px-8 rounded-md transition-colors duration-300"
-            >
-              Contact Us
-            </a>
-          </div>
-        </section>
-      </div>
-    </>
+      {/* Call to Action */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary text-white">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4 fade-in-up">Ready to Get Started?</h2>
+          <p className="text-xl mb-8 fade-in-up-delay-1">
+            Visit our location or contact us to learn more about our services
+          </p>
+          <a
+            href="/contact"
+            className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-3 px-8 rounded-md transition-colors duration-300 fade-in-up-delay-2"
+          >
+            Contact Us
+          </a>
+        </div>
+      </section>
+    </PageContainer>
   )
 } 
