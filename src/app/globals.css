@@ -64,24 +64,47 @@
 
 /* Custom animations to replace AnimatedFallIn component */
 .fade-in-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.fade-in-up-delay-1 {
+/* Only for scroll-triggered: hide until .is-visible is added */
+.fade-in-up.scroll-trigger {
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-out 0.1s forwards;
 }
 
-.fade-in-up-delay-2 {
+.fade-in-up,
+.fade-in-up-delay-0,
+.fade-in-up-delay-1,
+.fade-in-up-delay-2,
+.fade-in-up-delay-3,
+.fade-in-up-delay-4,
+.fade-in-up-delay-5,
+.fade-in-up-delay-6,
+.fade-in-up-delay-7,
+.fade-in-up-delay-8 {
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeInUp 0.6s ease-out 0.2s forwards;
+  animation: fadeInUpOnce 0.6s ease-out forwards;
 }
 
-@keyframes fadeInUp {
+.fade-in-up-delay-0 { animation-delay: 0s; }
+.fade-in-up-delay-1 { animation-delay: 0.1s; }
+.fade-in-up-delay-2 { animation-delay: 0.2s; }
+.fade-in-up-delay-3 { animation-delay: 0.3s; }
+.fade-in-up-delay-4 { animation-delay: 0.4s; }
+.fade-in-up-delay-5 { animation-delay: 0.5s; }
+.fade-in-up-delay-6 { animation-delay: 0.6s; }
+.fade-in-up-delay-7 { animation-delay: 0.7s; }
+.fade-in-up-delay-8 { animation-delay: 0.8s; }
+
+@keyframes fadeInUpOnce {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -116,4 +139,18 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Fade-in effect that only happens once per page load */
+.fade-in-once {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUpOnce 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.1s forwards;
+}
+
+@keyframes fadeInUpOnce {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 } 

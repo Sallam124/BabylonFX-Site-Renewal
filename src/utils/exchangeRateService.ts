@@ -34,7 +34,8 @@ export function getCachedRates(): { [key: string]: number } | null {
 }
 
 export function isCacheValid(): boolean {
-  return !!cachedRates && !!cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION);
+  if (!cachedRates || !cacheTimestamp) return false;
+  return Date.now() - cacheTimestamp < CACHE_DURATION;
 }
 
 export async function fetchAndCacheRates(baseCurrency: string, targetCurrencies: string[]): Promise<{ [key: string]: number }> {

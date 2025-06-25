@@ -1,6 +1,5 @@
 'use client'
 import dynamic from 'next/dynamic'
-import PageContainer from '@/components/PageContainer'
 
 // Dynamically import RateAlertForm to reduce initial bundle size
 const RateAlertForm = dynamic(() => import('@/components/RateAlertForm'), {
@@ -31,10 +30,8 @@ const supportedCurrencies = [
 
 export default function RateAlertPage() {
   return (
-    <PageContainer>
-      <div className="flex flex-col items-center justify-center py-16 px-4">
-        <RateAlertForm supportedCurrencies={supportedCurrencies} />
-      </div>
-    </PageContainer>
+    <div className="flex flex-col items-center justify-center min-h-screen py-16 px-4 bg-white">
+      <RateAlertForm supportedCurrencies={supportedCurrencies} />
+    </div>
   )
 } 

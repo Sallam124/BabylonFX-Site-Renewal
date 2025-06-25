@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Loader } from '@googlemaps/js-api-loader'
+import { FaMapMarkerAlt, FaTimes } from 'react-icons/fa'
 
 interface Location {
   name: string
@@ -68,6 +70,16 @@ const LocationMap = () => {
   const [geoDeniedVisible, setGeoDeniedVisible] = useState(false)
   const geoDeniedTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const geoDeniedFadeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [closeHover, setCloseHover] = useState(false)
+  const [lastTransition, setLastTransition] = useState<'open' | 'close' | null>(null)
+  const [mapLoading, setMapLoading] = useState(true)
+
+  useEffect(() => {
+    if (panelOpen) setLastTransition('open')
+    else setLastTransition('close')
+  }, [panelOpen])
 
   useEffect(() => {
     const initMap = async () => {
@@ -94,7 +106,10 @@ const LocationMap = () => {
           fullscreenControl: false
         })
 
+        mapInstance.setCenter({ lat: 43.6532, lng: -79.3832 });
+        mapInstance.setZoom(7);
         setMap(mapInstance)
+        setMapLoading(false)
 
         // Create markers for each location
         const newMarkers: { [key: string]: { marker: google.maps.Marker, infoWindow: google.maps.InfoWindow } } = {}
@@ -141,6 +156,7 @@ const LocationMap = () => {
       } catch (error) {
         console.error('Error loading Google Maps:', error)
         setError('Failed to load map. Please try again later.')
+        setMapLoading(false)
       }
     }
 
@@ -227,7 +243,7 @@ const LocationMap = () => {
   const handleShowAllBranches = () => {
     if (map) {
       map.setCenter({ lat: 43.6532, lng: -79.3832 }); // Toronto center
-      map.setZoom(8);
+      map.setZoom(7);
       // Close all info windows
       Object.values(markers).forEach(({ infoWindow: iw }) => iw.close());
       setSelectedLocation(null);
@@ -245,6 +261,24 @@ const LocationMap = () => {
       }
     };
   }, []);
+
+  // Responsive: show panel open by default on desktop, closed on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Hide location denied error when panel closes
+  useEffect(() => {
+    if (!panelOpen) {
+      setGeoDenied(false);
+      setGeoDeniedVisible(false);
+    }
+  }, [panelOpen]);
 
   if (error) {
     return (
@@ -265,43 +299,99 @@ const LocationMap = () => {
   return (
     <div className="w-full h-[600px] relative">
       <div ref={mapRef} className="w-full h-full rounded-lg" />
-      
-      {/* Location List Overlay */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-4 max-w-xs">
-        <button
-          onClick={handleFindNearest}
-          className="mb-4 w-full bg-primary text-white font-semibold py-2 rounded hover:bg-secondary transition-colors"
-        >
-          Find Nearest Branch
-        </button>
-        {geoDeniedVisible && (
-          <div className={`mb-2 text-red-700 bg-red-100 border border-red-300 rounded px-3 py-2 text-center text-sm font-semibold transition-all duration-500 ${geoDenied ? 'opacity-100 max-h-20' : 'opacity-0 max-h-0 overflow-hidden'}`}>
-            Location access denied. Please grant location access in your browser settings to use this feature.
+      {mapLoading && !error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-80 rounded-lg z-20">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-gray-600 text-lg font-semibold">Loading map...</p>
+          </div>
+        </div>
+      )}
+      {/* Collapsible Location List Overlay */}
+      <div
+        className={`absolute top-4 left-4 z-20 bg-white rounded-3xl overflow-hidden transition-all duration-700 ease-in-out shadow-lg select-none ${panelOpen ? 'max-h-[800px] p-4' : 'max-h-[3.5rem] p-0'}`}
+        style={{
+          width: '18rem',
+          maxWidth: '20rem'
+        }}
+        onMouseEnter={() => { if (window.innerWidth >= 768) setPanelOpen(true) }}
+        onMouseLeave={() => { if (window.innerWidth >= 768) setPanelOpen(false) }}
+        tabIndex={0}
+        aria-label="Show branch list"
+      >
+        {!panelOpen && (
+          <div className="flex items-center justify-center w-full h-[3.5rem]">
+            <button
+              className="w-14 h-14 flex items-center justify-center text-primary text-2xl focus:outline-none"
+              onClick={() => setPanelOpen(true)}
+              aria-label="Open branch list"
+              type="button"
+              style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
+            >
+              <FaMapMarkerAlt />
+            </button>
           </div>
         )}
-        <button
-          onClick={handleShowAllBranches}
-          className="mb-6 w-full bg-gray-200 text-gray-800 font-semibold py-2 rounded hover:bg-gray-300 transition-colors"
-        >
-          Show All Branches
-        </button>
-        <div className="space-y-4">
-          {locations.map((location) => (
-            <button
-              key={location.name}
-              onClick={() => handleLocationClick(location)}
-              className={`w-full text-left p-2 rounded hover:bg-gray-100 transition-colors ${
-                selectedLocation?.name === location.name ? 'bg-gray-100' : ''
-              }`}
-            >
-              <p className="font-medium">{location.name}</p>
-              <p className="text-sm text-gray-600">{location.address}</p>
-            </button>
-          ))}
-        </div>
+        {panelOpen && (
+          <div className="w-full flex flex-col">
+            {/* Close button for mobile */}
+            <div className="absolute top-2.5 right-2 md:hidden group" style={{ overflow: 'visible', zIndex: 9999 }}>
+              <button
+                className={`flex items-center justify-center text-gray-600 text-xl transition-all duration-300 ease-in-out ${isMobile && panelOpen ? 'p-0 bg-transparent' : ''}`}
+                style={{
+                  borderRadius: '9999px',
+                  background: isMobile && panelOpen ? 'transparent' : closeHover ? 'white' : 'none',
+                  boxShadow: closeHover && !(isMobile && panelOpen) ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                  zIndex: 9999,
+                  padding: isMobile && panelOpen ? 0 : undefined
+                }}
+                onMouseEnter={() => setCloseHover(true)}
+                onMouseLeave={() => setCloseHover(false)}
+                onFocus={() => setCloseHover(true)}
+                onBlur={() => setCloseHover(false)}
+                onClick={() => setPanelOpen(false)}
+                aria-label="Close branch list"
+                type="button"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <div className="flex flex-col gap-1 w-full pt-1">
+              <button
+                onClick={handleFindNearest}
+                className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition-colors ${isMobile ? 'mt-6 mb-2' : 'mb-2'}`}
+              >
+                Find Nearest Branch
+              </button>
+              {geoDeniedVisible && (
+                <div className="mb-1 min-w-[220px] text-red-700 bg-red-100 border border-red-300 rounded px-3 py-2 text-center text-xs font-semibold">
+                  Location access denied. Please grant location access in your browser settings to use this feature.
+                </div>
+              )}
+              <button
+                onClick={handleShowAllBranches}
+                className="mb-3 w-full bg-gray-200 text-gray-800 font-semibold py-2 rounded-xl hover:bg-gray-300 transition-colors"
+              >
+                Show All Branches
+              </button>
+              <div className="space-y-2">
+                {locations.map((location) => (
+                  <button
+                    key={location.name}
+                    onClick={() => handleLocationClick(location)}
+                    className={`w-full text-left p-2 rounded-xl hover:bg-gray-100 transition-colors ${selectedLocation?.name === location.name ? 'bg-gray-100' : ''}`}
+                  >
+                    <p className="font-medium">{location.name}</p>
+                    <p className="text-sm text-gray-600">{location.address}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default LocationMap 
+export default LocationMap

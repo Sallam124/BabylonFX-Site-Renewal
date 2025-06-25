@@ -36,10 +36,10 @@ export const ExchangeRateProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const baseCurrency = 'CAD';
       const supportedCurrencies = getSupportedCurrencies().filter(c => c !== baseCurrency);
       let newRates: { [key: string]: number };
-      if (isCacheValid()) {
-        newRates = getCachedRates()!;
-      } else {
+      if (!isCacheValid()) {
         newRates = await fetchAndCacheRates(baseCurrency, supportedCurrencies);
+      } else {
+        newRates = getCachedRates()!;
       }
       setRates(newRates);
       setLastUpdated(Date.now());

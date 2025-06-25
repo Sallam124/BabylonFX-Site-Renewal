@@ -1,4 +1,5 @@
-import PageContainer from '@/components/PageContainer'
+'use client';
+import { useScrollFadeIn } from '@/utils/useScrollFadeIn';
 
 const services = [
   {
@@ -37,47 +38,33 @@ const services = [
     icon: '🔔',
     link: '/#rate-alert',
   },
-]
+];
 
-const currentYear = new Date().getFullYear()
-
-export default function Services() {
+export default function ServicesGrid() {
   return (
-    <>
-      <PageContainer>
-        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up-delay-0">
-            Our Services
-          </h1>
-          <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1 text-center">
-            Discover the range of services we offer to meet your currency exchange needs
-          </p>
-        </div>
-        <section className="py-16 px-4 sm:px-6 lg:px-8 fade-in-up-delay-2">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {services.map((service, index) => (
-                <div
-                  key={index}
-                  className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 fade-in-up${index > 0 ? `-delay-${index}` : ''}`}
-                >
-                  <div className="text-4xl mb-4">{service.icon}</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
-                  {service.title === 'Rate Alerts' && (
-                    <a
-                      href="/rate-alert"
-                      className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-md transition-colors duration-300 mt-2"
-                    >
-                      Set a Rate Alert
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {services.map((service, index) => {
+        const fadeRef = useScrollFadeIn();
+        return (
+          <div
+            key={index}
+            ref={fadeRef as React.LegacyRef<HTMLDivElement>}
+            className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 fade-in-up scroll-trigger${index > 0 ? `-delay-${index}` : ''}`}
+          >
+            <div className="text-4xl mb-4">{service.icon}</div>
+            <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
+            <p className="text-gray-600 mb-4">{service.description}</p>
+            {service.title === 'Rate Alerts' && (
+              <a
+                href="/rate-alert"
+                className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-md transition-colors duration-300 mt-2"
+              >
+                Set a Rate Alert
+              </a>
+            )}
           </div>
-        </section>
-      </PageContainer>
-    </>
-  )
+        );
+      })}
+    </div>
+  );
 } 

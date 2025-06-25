@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useGlobalLoading } from '@/context/GlobalLoadingContext'
 
 // Lazy load mobile menu component
 const MobileMenu = lazy(() => import('./MobileMenu'))
@@ -33,6 +34,8 @@ const ClientNavigation = () => {
   const [scrolled, setScrolled] = useState(false)
   const [showRatesDropdown, setShowRatesDropdown] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { setLoading } = useGlobalLoading()
 
   const navItems = [
     { name: 'Home', path: '/', icon: '🏠' },
@@ -57,12 +60,19 @@ const ClientNavigation = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
+  // Custom navigation handler
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault()
+    setLoading(true)
+    router.push(path)
+  }
+
   return (
     <>
       {/* Main Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      <nav className={`fixed w-full z-50 transition-all duration-500 transition-colors transition-opacity ${
         scrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+          ? 'bg-white/60 backdrop-blur-md shadow-lg' 
           : 'bg-gradient-to-r from-[#1a1a2e] to-[#e94560]'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
@@ -74,8 +84,8 @@ const ClientNavigation = () => {
                 alt="BabylonFX Logo"
                 width={180}
                 height={48}
-                className={`h-10 w-auto transition-all duration-300 ${
-                  scrolled ? 'brightness-100' : 'brightness-0 invert'
+                className={`h-10 w-auto transition-all duration-500 transition-colors transition-opacity ${
+                  scrolled ? 'brightness-100 opacity-100' : 'brightness-0 invert opacity-80'
                 }`}
               />
             </Link>
@@ -113,8 +123,9 @@ const ClientNavigation = () => {
                     onMouseEnter={() => setShowRatesDropdown(true)}
                     onMouseLeave={() => setShowRatesDropdown(false)}
                   >
-                    <Link
+                    <a
                       href={item.path}
+                      onClick={e => handleNavClick(e, item.path)}
                       className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
                         pathname === item.path
                           ? scrolled 
@@ -126,22 +137,24 @@ const ClientNavigation = () => {
                       }`}
                     >
                       {item.name}
-                    </Link>
+                    </a>
                     {showRatesDropdown && (
                       <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                        <Link
+                        <a
                           href="/rate-alert"
+                          onClick={e => handleNavClick(e, '/rate-alert')}
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
                         >
                           Set Rate Alert
-                        </Link>
+                        </a>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <Link
+                  <a
                     key={item.path}
                     href={item.path}
+                    onClick={e => handleNavClick(e, item.path)}
                     className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
                       pathname === item.path
                         ? scrolled 
@@ -153,7 +166,7 @@ const ClientNavigation = () => {
                     }`}
                   >
                     {item.name}
-                  </Link>
+                  </a>
                 )
               ))}
             </div>

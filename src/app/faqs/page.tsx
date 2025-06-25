@@ -54,67 +54,69 @@ const FAQs = () => {
   }
 
   return (
-    <PageContainer>
-      <div className="max-w-3xl mx-auto mt-8 mb-8 px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-5xl font-extrabold text-primary mb-8 fade-in-up">
-          Find answers to common questions
-        </h2>
-      </div>
+    <>
+      <PageContainer>
+        <div className="max-w-3xl mx-auto mt-8 mb-8 px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-5xl font-extrabold text-primary mb-8 fade-in-up">
+            Find answers to common questions
+          </h2>
+        </div>
 
-      {/* FAQs Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-gray-50 rounded-lg shadow p-8 border border-gray-200">
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-md overflow-hidden fade-in-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <button
-                    className="w-full px-6 py-4 text-left focus:outline-none"
-                    onClick={() => toggleFAQ(index)}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold text-primary">
-                        {faq.question}
-                      </h3>
-                      <span className="text-secondary">
-                        {openIndex === index ? '\u2212' : '+'}
-                      </span>
+        {/* FAQs Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-gray-50 rounded-lg shadow p-8 border border-gray-200">
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <div key={index} className={`fade-in-up${index > 8 ? '-delay-8' : index > 0 ? `-delay-${index}` : ''}`}>
+                    <div
+                      className="bg-white rounded-lg shadow-md overflow-hidden"
+                    >
+                      <button
+                        className="w-full px-6 py-4 text-left focus:outline-none"
+                        onClick={() => toggleFAQ(index)}
+                      >
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-lg font-semibold text-primary">
+                            {faq.question}
+                          </h3>
+                          <span className="text-secondary">
+                            {openIndex === index ? '\u2212' : '+'}
+                          </span>
+                        </div>
+                      </button>
+                      {openIndex === index && (
+                        <div className="px-6 pb-4">
+                          <p className="text-gray-600">{faq.answer}</p>
+                        </div>
+                      )}
                     </div>
-                  </button>
-                  {openIndex === index && (
-                    <div className="px-6 pb-4">
-                      <p className="text-gray-600">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Contact Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-primary mb-4 fade-in-up">
-            Still Have Questions?
-          </h2>
-          <p className="text-xl mb-8 fade-in-up-delay-1">
-            Our team is here to help. Contact us for more information.
-          </p>
-          <a
-            href="/contact"
-            className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-md transition-colors duration-300 fade-in-up-delay-2"
-          >
-            Contact Us
-          </a>
-        </div>
-      </section>
-    </PageContainer>
+        {/* Contact Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-primary mb-4 fade-in-up">
+              Still Have Questions?
+            </h2>
+            <p className="text-xl mb-8 fade-in-up-delay-1">
+              Our team is here to help. Contact us for more information.
+            </p>
+            <a
+              href="/contact"
+              className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-md transition-colors duration-300 fade-in-up-delay-2"
+            >
+              Contact Us
+            </a>
+          </div>
+        </section>
+      </PageContainer>
+    </>
   )
 }
 

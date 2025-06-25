@@ -62,23 +62,13 @@ export default function RatesPage() {
 
   const { refreshRates: contextRefreshRates, isLoading: contextIsLoading, rates: contextRates, error: contextError, lastUpdated: contextLastUpdated } = useExchangeRates();
 
-  // Image carousel - cycle through images every 2.5 seconds
+  // Image carousel - cycle through images every 1.9 seconds, always running
   useEffect(() => {
-    console.log('Starting image carousel with', images.length, 'images, current index:', currentImageIndex);
     const imageTimer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => {
-        const newIndex = (prevIndex + 1) % images.length;
-        console.log('Carousel: switching from image', prevIndex, 'to image', newIndex, 'of', images.length);
-        return newIndex;
-      });
-    }, 2500) // Change image every 2.5 seconds
-
-    // Cleanup function to clear the interval
-    return () => {
-      console.log('Cleaning up image carousel timer');
-      clearInterval(imageTimer);
-    }
-  }, [images.length]) // Add images.length as dependency
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 1900); // Change image every 1.9 seconds
+    return () => clearInterval(imageTimer);
+  }, []); // No dependency on images.length, always runs
 
   // Debug effect to track currentImageIndex changes
   useEffect(() => {

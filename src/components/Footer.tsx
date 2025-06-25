@@ -26,15 +26,11 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-br from-pink-400 to-red-400 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full blur-3xl"></div>
-      </div>
+    <section className="relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#6e5a36] text-white w-full z-50 shadow-lg">
+      {/* Top-right Glow */}
+      <div className="absolute top-0 right-0 w-96 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-5 pointer-events-none"></div>
       
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10 mt-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
@@ -143,7 +139,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/20">
+        <div className="mt-6 pt-4 border-t border-white/20">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-300 text-sm">
               © {currentYear} BabylonFX. All rights reserved.
@@ -156,7 +152,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+    </section>
   )
 }
 
