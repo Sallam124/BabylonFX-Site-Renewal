@@ -32,7 +32,7 @@ This project aims to make BabylonFX more **user-friendly**, **visually clear**, 
 
 ---
 
-## ✨ Key Features (Planned)
+## ✨ Key Features 
 
 * Real-time currency exchange rates
 * Mobile-first responsive layout
@@ -48,28 +48,6 @@ This project aims to make BabylonFX more **user-friendly**, **visually clear**, 
 
 * Node.js (v18.17 or later)
 * npm or yarn package manager
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/babylonfx-website.git
-cd babylonfx-website
-
-# Install dependencies
-npm install
-# or
-yarn install
-
-# Start the development server
-npm run dev
-# or
-yarn dev
-```
-
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
 
 ## Development Scripts
 
