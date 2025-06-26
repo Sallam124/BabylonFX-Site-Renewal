@@ -5,7 +5,7 @@ interface PageContainerProps {
 
 export default function PageContainer({ children, className = '' }: PageContainerProps) {
   return (
-    <div className={`min-h-screen ${className}`}>
+    <div className={className}>
       {children}
     </div>
   )

@@ -1,7 +1,10 @@
+'use client'
 import React from 'react'
 import PageContainer from '@/components/PageContainer'
 import CurrencyConverterWrapper from '@/components/CurrencyConverterWrapper'
 import AnimateOnScroll from '@/components/AnimateOnScroll'
+import { useRouter } from 'next/navigation'
+import { useGlobalLoading } from '@/context/GlobalLoadingContext'
 
 const currentYear = new Date().getFullYear()
 
@@ -67,6 +70,14 @@ const features = [
 ]
 
 export default function Home() {
+  const router = useRouter();
+  const { setLoading } = useGlobalLoading();
+
+  const handleNavigate = (href: string) => {
+    setLoading(true);
+    router.push(href);
+  };
+
   return (
     <>
       <PageContainer>
@@ -138,12 +149,12 @@ export default function Home() {
                   <p className="text-gray-700 mb-4">
                     Buy and sell all major and exotic currencies with competitive rates and transparent pricing.
                   </p>
-                  <a
-                    href="/rates"
+                  <button
+                    onClick={() => handleNavigate('/rates')}
                     className="inline-block bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
                   >
                     View Rates
-                  </a>
+                  </button>
                 </div>
                 
                 <div className="bg-gradient-to-br from-blue-100 to-indigo-200 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 fade-in-up-delay-1 border border-blue-300">
@@ -152,12 +163,12 @@ export default function Home() {
                   <p className="text-gray-700 mb-4">
                     Send money worldwide with our flat-fee service and no hidden charges.
                   </p>
-                  <a
-                    href="/services"
+                  <button
+                    onClick={() => handleNavigate('/services')}
                     className="inline-block bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
                   >
                     Learn More
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -202,20 +213,13 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-8 fade-in-up-delay-3">
-                <a
-                  href="/contact"
+                <button
+                  onClick={() => handleNavigate('/contact')}
                   className="group relative inline-flex items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   <span className="relative z-10">Contact Us Today</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                </a>
-                <a
-                  href="/rate-alert"
-                  className="group relative inline-flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <span className="relative z-10">Set Rate Alert</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                </a>
+                </button>
               </div>
               <div className="text-center">
                 <p className="text-gray-300 text-sm fade-in-up-delay-4">

@@ -37,7 +37,7 @@ export default async function RootLayout({
           <RouteLoader />
           <Suspense fallback={<Loading />}>
             <NavigationSelector />
-            <main className="min-h-screen">
+            <main>
               <ExchangeRateProvider>
                 {children}
               </ExchangeRateProvider>

@@ -25,11 +25,11 @@ const Footer = () => {
   }
 
   return (
-    <section className="relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#6e5a36] text-white w-full z-50 shadow-lg">
+    <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#6e5a36] text-white w-full z-50 shadow-lg">
       {/* Top-right Glow */}
       <div className="absolute top-0 right-0 w-96 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-5 pointer-events-none"></div>
       
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10 mt-8">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
