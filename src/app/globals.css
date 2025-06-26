@@ -12,7 +12,8 @@
   }
 
   body {
-    @apply bg-white text-gray-900 antialiased;
+    @apply text-gray-900 antialiased;
+    background: linear-gradient(to bottom, #f3faff 0%, #eaf4fb 100%);
   }
 
   h1, h2, h3, h4, h5, h6 {
