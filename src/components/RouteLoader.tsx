@@ -24,13 +24,14 @@ export default function RouteLoader() {
 
   if (!loading) return null;
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
-      {/* Animated Bar Loader */}
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/65 backdrop-blur-md transition-opacity duration-300">
+      {/* Animated Bar Loader (|||||) - no spinner at the end */}
       <div className="flex space-x-1 mb-1">
         <span className="block w-2 h-8 bg-white rounded animate-barLoader" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-1" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-2" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-3" />
+        <span className="block w-2 h-8 bg-white rounded" />
       </div>
       <img
         src="/images/name-logo.svg"

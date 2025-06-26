@@ -4,6 +4,6 @@ import Footer from './Footer'
 
 export default function FooterWrapper() {
   const pathname = usePathname()
-  if (pathname === '/' || pathname === '/rate-alert') return null
+  if (pathname === '/') return null
   return <Footer />
 } 

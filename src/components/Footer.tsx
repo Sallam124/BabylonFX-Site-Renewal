@@ -9,7 +9,6 @@ const Footer = () => {
       { name: 'International Transfers', href: '/services#international-transfers' },
       { name: 'Business Solutions', href: '/services#business-solutions' },
       { name: 'Travel Money', href: '/services#travel-money' },
-      { name: 'Rate Alert', href: '/rate-alert' },
     ],
     company: [
       { name: 'About Us', href: '/about' },

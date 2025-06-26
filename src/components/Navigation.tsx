@@ -99,16 +99,6 @@ const Navigation = () => {
                     >
                       {item.name}
                     </Link>
-                    {showRatesDropdown && (
-                      <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                        <Link
-                          href="/rate-alert"
-                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
-                        >
-                          Set Rate Alert
-                        </Link>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <Link
@@ -181,19 +171,6 @@ const Navigation = () => {
                     {item.name}
                   </Link>
                 ))}
-                {/* Mobile-only Rate Alert link */}
-                <Link
-                  href="/rate-alert"
-                  className={`flex items-center px-5 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
-                    pathname === '/rate-alert'
-                      ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <span className="mr-4 text-2xl">🔔</span>
-                  Rate Alert
-                </Link>
               </nav>
             </div>
             <div className="p-6 border-t">

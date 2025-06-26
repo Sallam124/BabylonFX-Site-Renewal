@@ -62,19 +62,6 @@ const MobileMenu = ({ isOpen, onClose, navItems, pathname }: MobileMenuProps) =>
                   {item.name}
                 </Link>
               ))}
-              {/* Mobile-only Rate Alert link */}
-              <Link
-                href="/rate-alert"
-                className={`flex items-center px-5 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
-                  pathname === '/rate-alert'
-                    ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                    : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
-                }`}
-                onClick={onClose}
-              >
-                <span className="mr-4 text-2xl">🔔</span>
-                Rate Alert
-              </Link>
             </nav>
           </div>
           <div className="p-6 border-t">

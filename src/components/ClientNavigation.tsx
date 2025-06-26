@@ -63,8 +63,10 @@ const ClientNavigation = () => {
   // Custom navigation handler
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     e.preventDefault()
-    setLoading(true)
-    router.push(path)
+    if (path !== pathname) {
+      setLoading(true)
+      router.push(path)
+    }
   }
 
   return (
@@ -78,7 +80,17 @@ const ClientNavigation = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 flex items-center -ml-2">
+            <a
+              href="/"
+              className="flex-shrink-0 flex items-center -ml-2 cursor-pointer"
+              onClick={e => {
+                e.preventDefault();
+                if (pathname !== '/') {
+                  setLoading(true);
+                  router.push('/');
+                }
+              }}
+            >
               <Image
                 src="/images/babylon-logo.png"
                 alt="BabylonFX Logo"
@@ -88,7 +100,7 @@ const ClientNavigation = () => {
                   scrolled ? 'brightness-100 opacity-100' : 'brightness-0 invert opacity-80'
                 }`}
               />
-            </Link>
+            </a>
 
             {/* Mobile Menu Button */}
             <button
@@ -132,23 +144,12 @@ const ClientNavigation = () => {
                             ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
                             : 'bg-white/20 text-white backdrop-blur-sm'
                           : scrolled
-                            ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                            : 'text-white hover:bg-white/10'
+                            ? 'text-gray-600 hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-black hover:font-semibold transition-all duration-300'
+                            : 'text-white hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-yellow-200 transition-all duration-300'
                       }`}
                     >
                       {item.name}
                     </a>
-                    {showRatesDropdown && (
-                      <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                        <a
-                          href="/rate-alert"
-                          onClick={e => handleNavClick(e, '/rate-alert')}
-                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors"
-                        >
-                          Set Rate Alert
-                        </a>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <a
@@ -161,8 +162,8 @@ const ClientNavigation = () => {
                           ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
                           : 'bg-white/20 text-white backdrop-blur-sm'
                         : scrolled
-                          ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                          : 'text-white hover:bg-white/10'
+                          ? 'text-gray-600 hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-black hover:font-semibold transition-all duration-300'
+                          : 'text-white hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-yellow-200 transition-all duration-300'
                     }`}
                   >
                     {item.name}

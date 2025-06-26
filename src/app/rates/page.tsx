@@ -413,18 +413,9 @@ export default function RatesPage() {
           
           <div className="mt-4 text-sm text-gray-500 text-center">
             <p>Rates are updated every 5 minutes automatically. Click "Refresh Rates" for immediate updates.</p>
-            <p className="mt-1">For the most accurate rates, please contact us directly or visit one of our locations.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Disclaimer */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center text-sm text-gray-500">
-            <p>
-              * Live rates are subject to change without notice. Rates shown include our standard spread.
-              <br />
+            <p className="mt-1">For the most accurate rates, please contact us directly or visit our locations.</p>
+            <p className="mt-12">
+              * Live rates are subject to change without notice. Rates shown include our standard spread.<br />
               ** Minimum transaction amounts may apply. Please visit our location for more details.
             </p>
           </div>
