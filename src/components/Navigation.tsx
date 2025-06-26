@@ -47,7 +47,7 @@ const Navigation = () => {
                 width={180}
                 height={48}
                 className={`h-10 w-auto transition-all duration-300 ${
-                  scrolled ? 'brightness-100' : 'brightness-0 invert'
+                  scrolled ? 'brightness-200 contrast-150' : 'brightness-200 contrast-150 invert'
                 }`}
               />
             </Link>
