@@ -123,7 +123,7 @@ export default function Home() {
             Effortless Currency Exchange
           </h1>
           <div className="mt-0 max-w-3xl mx-auto text-center fade-in-up-delay-1">
-            <div className={`text-3xl md:text-4xl font-bold text-black leading-snug ${marcellus.className}`}>Fast, reliable & simple.</div>
+            <div className={`text-3xl md:text-4xl font-bold text-black leading-snug ${marcellus.className}`}>Fast, Reliable & Simple.</div>
             <div className={`text-lg md:text-xl text-gray-500 italic mt-0.5 ${marcellus.className}`}>Delivered to you by BabylonFX.</div>
           </div>
         </div>
