@@ -7,10 +7,16 @@
     --font-times: 'Times New Roman', 'Times', serif;
     --font-ciguatera: 'Ciguatera', serif;
     --font-pmingliu: 'PMingLiU-ExtB', serif;
+    --font-didot: 'Didot', 'Times New Roman', serif;
   }
 
   /* Ciguatera font - using Playfair Display as alternative */
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+  
+  /* Didot font class */
+  .font-didot {
+    font-family: var(--font-didot);
+  }
 
   html {
     @apply scroll-smooth;

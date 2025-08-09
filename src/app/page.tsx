@@ -119,7 +119,7 @@ export default function Home() {
       <PageContainer>
         {/* Hero Section */}
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-7xl  tracking-wide mb-2 text-primary  fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center font-pmingliu">
+          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-wide mb-2 text-primary italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center ${dmSerifDisplay.className}`}>
             Effortless Currency Exchange
           </h1>
           <div className="mt-0 max-w-3xl mx-auto text-center fade-in-up-delay-1">
@@ -348,7 +348,7 @@ export default function Home() {
                       href="https://www.facebook.com/babylonfx"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
                     >
                       <span className="sr-only">Facebook</span>
                       <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -359,7 +359,7 @@ export default function Home() {
                       href="https://x.com/BabylonMS"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
                     >
                       <span className="sr-only">Twitter</span>
                       <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -370,7 +370,7 @@ export default function Home() {
                       href="https://www.instagram.com/officialbabylonfx/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                      className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
                     >
                       <span className="sr-only">Instagram</span>
                       <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">

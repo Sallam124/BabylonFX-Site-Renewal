@@ -143,10 +143,10 @@ const ClientNavigation = () => {
                   className={`px-5 py-2.5 rounded-full text-lg transition-all duration-500 ease-out no-underline hover:no-underline ${
                     currentPath === item.path
                       ? scrolled 
-                        ? 'bg-white/20 backdrop-blur-xl text-gray-800 shadow-xl border border-white/30'
+                        ? 'bg-white/20 backdrop-blur-xl text-gray-800 shadow-xl'
                         : 'bg-white/20 text-white backdrop-blur-sm'
                       : scrolled
-                        ? 'text-gray-800 hover:bg-white/20 hover:backdrop-blur-xl hover:text-gray-800 hover:scale-110 hover:shadow-xl hover:border hover:border-white/30'
+                        ? 'text-gray-800 hover:bg-white/20 hover:backdrop-blur-xl hover:text-gray-800 hover:scale-110 hover:shadow-xl'
                         : 'text-white hover:bg-white/10 hover:text-white hover:scale-110 hover:shadow-md hover:shadow-black/20 hover:ring-1 hover:ring-black/30'
                   }`}
                   style={{ textDecoration: 'none' }}

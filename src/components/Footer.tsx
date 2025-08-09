@@ -55,7 +55,7 @@ const Footer = () => {
                 href="https://www.facebook.com/babylonfx"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
               >
                 <span className="sr-only">Facebook</span>
                 <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@ const Footer = () => {
                 href="https://x.com/BabylonMS"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
               >
                 <span className="sr-only">Twitter</span>
                 <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ const Footer = () => {
                 href="https://www.instagram.com/officialbabylonfx/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-110"
+                className="group bg-white/10 backdrop-blur-sm p-3 rounded-full hover:bg-white/20 transition-all duration-300 transform hover:scale-110"
               >
                 <span className="sr-only">Instagram</span>
                 <svg className="h-5 w-5 text-gray-200 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
