@@ -65,7 +65,6 @@ Deployment platform: **Vercel**
 
 ---
 
-
 ## Contact
 
 BabylonFX – [info@babylonfx.com](mailto:info@babylonfx.com)
