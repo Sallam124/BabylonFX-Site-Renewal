@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { z } from 'zod';
+
+// Input validation schema
+const ExchangeRateQuerySchema = z.object({
+  base: z.string().length(3).toUpperCase().default('CAD'),
+  targets: z.string().optional().transform(val => 
+    val ? val.split(',').map(c => c.trim().toUpperCase()) : []
+  )
+});
 
 interface ExchangeRateResponse {
   rates: {
@@ -27,17 +36,32 @@ const mockRates: { [key: string]: number } = {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const baseCurrency = searchParams.get('base') || 'CAD';
-    const targetCurrencies = searchParams.get('targets')?.split(',') || [];
+    
+    // Validate input parameters
+    const validationResult = ExchangeRateQuerySchema.safeParse({
+      base: searchParams.get('base'),
+      targets: searchParams.get('targets')
+    });
 
-    // Normalize currency codes to uppercase
-    const normalizedBase = baseCurrency.toUpperCase();
-    const normalizedTargets = targetCurrencies.map(c => c.toUpperCase());
+    if (!validationResult.success) {
+      return new NextResponse(JSON.stringify({ 
+        error: 'Invalid input parameters',
+        details: validationResult.error.errors 
+      }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+    }
+
+    const { base: baseCurrency, targets: targetCurrencies } = validationResult.data;
 
     // If no target currencies specified, return all mock rates
-    if (normalizedTargets.length === 0) {
+    if (targetCurrencies.length === 0) {
       return new NextResponse(JSON.stringify({
-        base: normalizedBase,
+        base: baseCurrency,
         rates: mockRates,
         date: new Date().toISOString(),
         source: 'mock'
@@ -50,8 +74,11 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      // Use ExchangeRate-API without cache busting for better performance
-      const url = `https://api.exchangerate-api.com/v4/latest/${normalizedBase}`;
+      // Use ExchangeRate-API with optional API key
+      const apiKey = process.env.EXCHANGE_RATE_API_KEY;
+      const url = apiKey 
+        ? `https://api.exchangerate-api.com/v4/latest/${baseCurrency}?api_key=${apiKey}`
+        : `https://api.exchangerate-api.com/v4/latest/${baseCurrency}`;
 
       const response = await axios.get<ExchangeRateResponse>(url, {
         headers: {
@@ -62,12 +89,12 @@ export async function GET(request: NextRequest) {
       });
 
       if (!response.data?.rates) {
-        throw new Error('No rates data received');
+        throw new Error('No rates data received from external API');
       }
 
       // Extract only the requested currencies
       const rates: {[key: string]: number} = {};
-      normalizedTargets.forEach(currency => {
+      targetCurrencies.forEach(currency => {
         if (response.data.rates[currency]) {
           rates[currency] = response.data.rates[currency];
         } else {
@@ -77,7 +104,7 @@ export async function GET(request: NextRequest) {
       });
 
       return new NextResponse(JSON.stringify({
-        base: normalizedBase,
+        base: baseCurrency,
         rates,
         date: response.data.date,
         source: 'api'
@@ -88,17 +115,20 @@ export async function GET(request: NextRequest) {
         }
       });
     } catch (error) {
+      console.error('External API error:', error);
+      
       // Return mock rates as fallback
       const rates: {[key: string]: number} = {};
-      normalizedTargets.forEach(currency => {
+      targetCurrencies.forEach(currency => {
         rates[currency] = mockRates[currency] || 1;
       });
 
       return new NextResponse(JSON.stringify({
-        base: normalizedBase,
+        base: baseCurrency,
         rates,
         date: new Date().toISOString(),
-        source: 'mock'
+        source: 'mock',
+        warning: 'Using fallback data due to external API error'
       }), {
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +138,10 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Exchange rate API error:', error);
-    return new NextResponse(JSON.stringify({ error: 'Failed to fetch exchange rates' }), {
+    return new NextResponse(JSON.stringify({ 
+      error: 'Internal server error',
+      message: 'Failed to process exchange rate request'
+    }), {
       status: 500,
       headers: {
         'Content-Type': 'application/json',

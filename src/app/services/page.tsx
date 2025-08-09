@@ -4,37 +4,37 @@ const services = [
   {
     title: 'Currency Exchange',
     description: `Babylon Monetary Services buys and sells all tradable major and exotic currencies. For a list of our rates for major currencies we handle, visit the rates section. For any other exotic currencies or currencies not included in our rates section, please contact us for about their rates. We have multiple methods of payment for purchasing a foreign currency, including cash, bankdraft and wire transfer*. *Wire transfer in USD or CAD only.`,
-    icon: '💱',
+    icon: '',
   },
   {
     title: 'International Money Transfers',
     description: `Babylon Monetary Services transfers money worldwide for thousands of clients every year. Besides currency exchange, money transfer is our most popular service as we maintain a no hidden fee policy. We offer money transfer to most countries worldwide for a flat fee of $7 CAD for up to $7000 CAD transferred. We encourage customers to contact us ahead of time to inquire whether their country is included in this offer.`,
-    icon: '🌍',
+    icon: '',
   },
   {
     title: 'Wire Transfers',
     description: `At Babylon Monetary Services, we realize how frustrating it is to get monetary services at other institutions – the long lines, the slow work pace, and the work hours. We know how disappointing it is to make your way to your bank during your lunch break because it closes at 4:00 pm, only not to be served because of a long wait line.`,
-    icon: '🔗',
+    icon: '',
   },
   {
     title: 'Business Solutions',
     description: 'Specialized currency exchange services for businesses of all sizes.',
-    icon: '💼',
+    icon: '',
   },
   {
     title: 'Travel Money',
     description: 'Order foreign currency for your travels with our convenient travel money service.',
-    icon: '✈️',
+    icon: '',
   },
   {
     title: 'Currency Cards',
     description: 'Multi-currency cards for secure and convenient spending abroad.',
-    icon: '💳',
+    icon: '',
   },
   {
     title: 'Rate Alerts',
     description: 'Set up alerts to notify you when your desired exchange rate is reached.',
-    icon: '🔔',
+    icon: '',
     link: '/#rate-alert',
   },
 ]

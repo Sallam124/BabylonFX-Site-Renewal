@@ -4,16 +4,30 @@
 
 @layer base {
   :root {
-    --font-inter: 'Inter', sans-serif;
+    --font-times: 'Times New Roman', 'Times', serif;
+    --font-ciguatera: 'Ciguatera', serif;
+    --font-pmingliu: 'PMingLiU-ExtB', serif;
   }
+
+  /* Ciguatera font - using Playfair Display as alternative */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply text-gray-900 antialiased;
+    @apply text-gray-900 antialiased font-times;
     background: linear-gradient(to bottom, #f3faff 0%, #eaf4fb 100%);
+  }
+
+  /* Remove underlines from navigation links */
+  nav a {
+    text-decoration: none !important;
+  }
+  
+  nav a:hover {
+    text-decoration: none !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -154,4 +168,36 @@
     opacity: 1;
     transform: translateY(0);
   }
+} 
+
+/* Bar Loader Animation */
+@keyframes barLoader {
+  0%, 100% { 
+    transform: scaleY(0.4); 
+    opacity: 0.5; 
+  }
+  50% { 
+    transform: scaleY(1.2); 
+    opacity: 1; 
+  }
+}
+
+.animate-barLoader {
+  animation: barLoader 1s infinite cubic-bezier(0.4,0,0.2,1);
+}
+
+.bar-delay-1 { 
+  animation-delay: 0.15s; 
+}
+
+.bar-delay-2 { 
+  animation-delay: 0.3s; 
+}
+
+.bar-delay-3 { 
+  animation-delay: 0.45s; 
+}
+
+.bar-delay-4 { 
+  animation-delay: 0.6s; 
 } 

@@ -25,17 +25,25 @@ const Footer = () => {
   }
 
   return (
-    <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#6e5a36] text-white w-full z-50 shadow-lg">
+    <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#4a3d2a] text-white w-full z-50 shadow-lg">
       {/* Top-right Glow */}
-      <div className="absolute top-0 right-0 w-96 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-5 pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-48 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-2 pointer-events-none"></div>
       
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <h3 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 bg-clip-text text-transparent mb-4">
+            <div className="text-3xl font-bold mb-4"
+                style={{
+                  background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "drop-shadow(0 0 0.5px rgba(255, 231, 178, 0.005))",
+                  display: "inline-block",
+                }}>
               BabylonFX
-            </h3>
+            </div>
             <p className="text-gray-200 max-w-sm leading-relaxed mb-4">
               A family-owned business founded in spring, 2008, on a single premise: Complete transparency in conducting business.
             </p>
@@ -89,9 +97,12 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-200 hover:text-cyan-300 transition-all duration-300 text-lg group flex items-center"
+                    className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                   >
-                    <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                      {link.name}
+                      <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -108,9 +119,12 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-200 hover:text-emerald-300 transition-all duration-300 text-lg group flex items-center"
+                    className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                   >
-                    <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                      {link.name}
+                      <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -127,9 +141,12 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-200 hover:text-purple-300 transition-all duration-300 text-lg group flex items-center"
+                    className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                   >
-                    <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                      {link.name}
+                      <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                    </span>
                   </Link>
                 </li>
               ))}

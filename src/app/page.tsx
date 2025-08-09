@@ -119,12 +119,12 @@ export default function Home() {
       <PageContainer>
         {/* Hero Section */}
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-wide mb-2 text-primary italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center ${dmSerifDisplay.className}`}>
+          <h1 className="text-5xl md:text-7xl  tracking-wide mb-2 text-primary  fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center font-pmingliu">
             Effortless Currency Exchange
           </h1>
           <div className="mt-0 max-w-3xl mx-auto text-center fade-in-up-delay-1">
-            <div className={`text-3xl md:text-4xl font-bold text-black leading-snug ${marcellus.className}`}>Fast, Reliable & Simple.</div>
-            <div className={`text-lg md:text-xl text-gray-500 italic mt-0.5 ${marcellus.className}`}>Delivered to you by BabylonFX.</div>
+            <div className="text-2xl md:text-4xl  text-black leading-snug font-ciguatera">Fast, Reliable & Simple.</div>
+            <div className={`text-lg md:text-xl text-gray-600 italic mt-0.5 ${marcellus.className}`}>Delivered to you by BabylonFX.</div>
           </div>
         </div>
 
@@ -230,7 +230,7 @@ export default function Home() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-gradient-to-br from-emerald-100 to-teal-200 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 fade-in-up border border-emerald-300">
-                  <div className="text-4xl mb-4 bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">💱</div>
+                  <div className="text-4xl mb-4 bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent"></div>
                   <h3 className="text-2xl font-semibold text-primary mb-4">Currency Exchange</h3>
                   <p className="text-gray-700 mb-4">
                     Buy and sell all major and exotic currencies with competitive rates and transparent pricing.
@@ -244,7 +244,7 @@ export default function Home() {
                 </div>
                 
                 <div className="bg-gradient-to-br from-blue-100 to-indigo-200 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 fade-in-up-delay-1 border border-blue-300">
-                  <div className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">🌍</div>
+                  <div className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent"></div>
                   <h3 className="text-2xl font-semibold text-primary mb-4">International Money Transfers</h3>
                   <p className="text-gray-700 mb-4">
                     Send money worldwide with our flat-fee service and no hidden charges.
@@ -263,7 +263,7 @@ export default function Home() {
 
         {/* Call to Action */}
         <AnimateOnScroll>
-          <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#6e5a36] text-white relative overflow-hidden">
+          <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#4a3d2a] text-white relative overflow-hidden">
             {/* Background Pattern */}
             <div
               className="pointer-events-none absolute -bottom-32 -right-32 w-[800px] h-[800px] rounded-full blur-3xl"
@@ -274,26 +274,34 @@ export default function Home() {
             ></div>
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold mb-6 fade-in-up bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 bg-clip-text text-transparent">
+                <div className="text-4xl md:text-5xl font-bold mb-6 fade-in-up"
+                    style={{
+                      background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      filter: "drop-shadow(0 0 8px rgba(255, 231, 178, 0.2))",
+                      display: "inline-block",
+                    }}>
                   Ready to Get Started?
-                </h2>
+                </div>
                 <p className="text-xl md:text-2xl mb-8 fade-in-up-delay-1 text-gray-200 max-w-3xl mx-auto leading-relaxed">
                   Join thousands of satisfied customers who trust BabylonFX for their currency exchange needs
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 fade-in-up">
-                  <div className="text-3xl mb-3">🚀</div>
+                  <div className="text-3xl mb-3"></div>
                   <h3 className="text-lg font-semibold mb-2 text-white">Quick & Easy</h3>
                   <p className="text-gray-300 text-sm">Get started in minutes with our streamlined process</p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 fade-in-up-delay-1">
-                  <div className="text-3xl mb-3">💎</div>
+                  <div className="text-3xl mb-3"></div>
                   <h3 className="text-lg font-semibold mb-2 text-white">Best Rates</h3>
                   <p className="text-gray-300 text-sm">Competitive rates with no hidden fees</p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 fade-in-up-delay-2">
-                  <div className="text-3xl mb-3">🛡️</div>
+                  <div className="text-3xl mb-3"></div>
                   <h3 className="text-lg font-semibold mb-2 text-white">Secure & Safe</h3>
                   <p className="text-gray-300 text-sm">Bank-level security for all transactions</p>
                 </div>
@@ -318,9 +326,17 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Company Info */}
                 <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 bg-clip-text text-transparent mb-4">
+                  <div className="text-3xl font-bold mb-4"
+                      style={{
+                        background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        filter: "drop-shadow(0 0 0.5px rgba(255, 231, 178, 0.005))",
+                        display: "inline-block",
+                      }}>
                     BabylonFX
-                  </h3>
+                  </div>
                   <p className="text-gray-200 max-w-sm leading-relaxed mb-4">
                     A family-owned business founded in spring, 2008, on a single premise: Complete transparency in conducting business.
                   </p>
@@ -373,9 +389,12 @@ export default function Home() {
                       <li key={link.name}>
                         <a
                           href={link.href}
-                          className="text-gray-200 hover:text-cyan-300 transition-all duration-300 text-lg group flex items-center"
+                          className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                         >
-                          <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                          <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                            {link.name}
+                            <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                          </span>
                         </a>
                       </li>
                     ))}
@@ -391,9 +410,12 @@ export default function Home() {
                       <li key={link.name}>
                         <a
                           href={link.href}
-                          className="text-gray-200 hover:text-emerald-300 transition-all duration-300 text-lg group flex items-center"
+                          className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                         >
-                          <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                          <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                            {link.name}
+                            <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                          </span>
                         </a>
                       </li>
                     ))}
@@ -409,9 +431,12 @@ export default function Home() {
                       <li key={link.name}>
                         <a
                           href={link.href}
-                          className="text-gray-200 hover:text-purple-300 transition-all duration-300 text-lg group flex items-center"
+                          className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
                         >
-                          <span className="group-hover:translate-x-1 transition-transform duration-300">{link.name}</span>
+                          <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
+                            {link.name}
+                            <div className="absolute left-0 bottom-0 h-0.5 w-0 bg-white transition-all duration-300 ease-out group-hover:w-full"></div>
+                          </span>
                         </a>
                       </li>
                     ))}

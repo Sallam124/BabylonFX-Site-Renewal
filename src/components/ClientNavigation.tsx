@@ -32,18 +32,24 @@ const throttle = (func: Function, delay: number) => {
 const ClientNavigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [showRatesDropdown, setShowRatesDropdown] = useState(false)
+  const [currentPath, setCurrentPath] = useState('')
+
   const pathname = usePathname()
   const router = useRouter()
-  const { setLoading } = useGlobalLoading()
+  const { loading, setLoading } = useGlobalLoading()
+
+  // Update current path when pathname changes
+  useEffect(() => {
+    setCurrentPath(pathname)
+  }, [pathname])
 
   const navItems = [
-    { name: 'Home', path: '/', icon: '🏠' },
-    { name: 'Services', path: '/services', icon: '💱' },
-    { name: 'Rates', path: '/rates', icon: '📊' },
-    { name: 'About Us', path: '/about', icon: 'ℹ️' },
-    { name: 'Contact', path: '/contact', icon: '📞' },
-    { name: 'FAQs', path: '/faqs', icon: '❓' },
+    { name: 'Home', path: '/', icon: '' },
+    { name: 'Services', path: '/services', icon: '' },
+    { name: 'Rates', path: '/rates', icon: '' },
+    { name: 'About Us', path: '/about', icon: '' },
+    { name: 'Contact', path: '/contact', icon: '' },
+    { name: 'FAQs', path: '/faqs', icon: '' },
   ]
 
   // Throttled scroll handler
@@ -63,8 +69,9 @@ const ClientNavigation = () => {
   // Custom navigation handler
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     e.preventDefault()
-    if (path !== pathname) {
-      setLoading(true)
+    if (path !== currentPath) {
+      setCurrentPath(path) // Update immediately
+      setLoading(true) // Always show loading animation
       router.push(path)
     }
   }
@@ -74,7 +81,7 @@ const ClientNavigation = () => {
       {/* Main Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-500 transition-colors transition-opacity ${
         scrolled 
-          ? 'bg-white/60 backdrop-blur-md shadow-lg' 
+          ? 'bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20' 
           : 'bg-gradient-to-r from-[#1a1a2e] to-[#e94560]'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
@@ -85,8 +92,9 @@ const ClientNavigation = () => {
               className="flex-shrink-0 flex items-center -ml-2 cursor-pointer"
               onClick={e => {
                 e.preventDefault();
-                if (pathname !== '/') {
-                  setLoading(true);
+                if (currentPath !== '/') {
+                  setCurrentPath('/');
+                  setLoading(true); // Always show loading animation
                   router.push('/');
                 }
               }}
@@ -128,47 +136,23 @@ const ClientNavigation = () => {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-2">
               {navItems.map((item) => (
-                item.name === 'Rates' ? (
-                  <div
-                    key={item.path}
-                    className="relative"
-                    onMouseEnter={() => setShowRatesDropdown(true)}
-                    onMouseLeave={() => setShowRatesDropdown(false)}
-                  >
-                    <a
-                      href={item.path}
-                      onClick={e => handleNavClick(e, item.path)}
-                      className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
-                        pathname === item.path
-                          ? scrolled 
-                            ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                            : 'bg-white/20 text-white backdrop-blur-sm'
-                          : scrolled
-                            ? 'text-gray-600 hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-black hover:font-semibold transition-all duration-300'
-                            : 'text-white hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-yellow-200 transition-all duration-300'
-                      }`}
-                    >
-                      {item.name}
-                    </a>
-                  </div>
-                ) : (
-                  <a
-                    key={item.path}
-                    href={item.path}
-                    onClick={e => handleNavClick(e, item.path)}
-                    className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
-                      pathname === item.path
-                        ? scrolled 
-                          ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                          : 'bg-white/20 text-white backdrop-blur-sm'
-                        : scrolled
-                          ? 'text-gray-600 hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-black hover:font-semibold transition-all duration-300'
-                          : 'text-white hover:ring-2 hover:ring-yellow-400/80 hover:ring-offset-2 hover:shadow-yellow-300/40 hover:text-yellow-200 transition-all duration-300'
-                    }`}
-                  >
-                    {item.name}
-                  </a>
-                )
+                <a
+                  key={item.path}
+                  href={item.path}
+                  onClick={e => handleNavClick(e, item.path)}
+                  className={`px-5 py-2.5 rounded-full text-lg transition-all duration-500 ease-out no-underline hover:no-underline ${
+                    currentPath === item.path
+                      ? scrolled 
+                        ? 'bg-white/20 backdrop-blur-xl text-gray-800 shadow-xl border border-white/30'
+                        : 'bg-white/20 text-white backdrop-blur-sm'
+                      : scrolled
+                        ? 'text-gray-800 hover:bg-white/20 hover:backdrop-blur-xl hover:text-gray-800 hover:scale-110 hover:shadow-xl hover:border hover:border-white/30'
+                        : 'text-white hover:bg-white/10 hover:text-white hover:scale-110 hover:shadow-md hover:shadow-black/20 hover:ring-1 hover:ring-black/30'
+                  }`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {item.name}
+                </a>
               ))}
             </div>
           </div>

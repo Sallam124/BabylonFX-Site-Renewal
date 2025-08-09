@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import NavigationSelector from '@/components/NavigationSelector'
 import FooterWrapper from '@/components/FooterWrapper'
@@ -9,8 +8,6 @@ import Loading from './loading'
 import { headers } from 'next/headers'
 import RouteLoader from '@/components/RouteLoader'
 import { GlobalLoadingProvider } from '@/context/GlobalLoadingContext'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'BabylonFX - Currency Exchange Services',
@@ -32,7 +29,7 @@ export default async function RootLayout({
   const isRateAlert = pathname.startsWith('/rate-alert');
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} text-gray-900`} suppressHydrationWarning>
+      <body className="font-times text-gray-900" suppressHydrationWarning>
         <GlobalLoadingProvider>
           <RouteLoader />
           <Suspense fallback={<Loading />}>

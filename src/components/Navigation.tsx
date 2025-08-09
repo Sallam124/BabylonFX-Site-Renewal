@@ -21,12 +21,12 @@ const Navigation = () => {
   }, [])
 
   const navItems = [
-    { name: 'Home', path: '/', icon: '🏠' },
-    { name: 'Services', path: '/services', icon: '💱' },
-    { name: 'Rates', path: '/rates', icon: '📊' },
-    { name: 'About Us', path: '/about', icon: 'ℹ️' },
-    { name: 'Contact', path: '/contact', icon: '📞' },
-    { name: 'FAQs', path: '/faqs', icon: '❓' },
+    { name: 'Home', path: '/', icon: '' },
+    { name: 'Services', path: '/services', icon: '' },
+    { name: 'Rates', path: '/rates', icon: '' },
+    { name: 'About Us', path: '/about', icon: '' },
+    { name: 'Contact', path: '/contact', icon: '' },
+    { name: 'FAQs', path: '/faqs', icon: '' },
   ]
 
   return (
@@ -58,7 +58,7 @@ const Navigation = () => {
               className={`md:hidden p-3 rounded-full transition-all duration-300 ${
                 scrolled 
                   ? 'bg-gray-100 hover:bg-gray-200' 
-                  : 'bg-white/10 hover:bg-white/20'
+                  : 'bg-white/10 hover:bg-white/80'
               }`}
             >
               <span className="sr-only">Open menu</span>
@@ -87,13 +87,13 @@ const Navigation = () => {
                   >
                     <Link
                       href={item.path}
-                      className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
+                      className={`px-5 py-2.5 rounded-full text-base transition-all duration-300 ${
                         pathname === item.path
                           ? scrolled 
-                            ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                            ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
                             : 'bg-white/20 text-white backdrop-blur-sm'
                           : scrolled
-                            ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
+                            ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
                             : 'text-white hover:bg-white/10'
                       }`}
                     >
@@ -104,13 +104,13 @@ const Navigation = () => {
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`px-5 py-2.5 rounded-full text-base font-medium transition-all duration-300 ${
+                    className={`px-5 py-2.5 rounded-full text-base transition-all duration-300 ${
                       pathname === item.path
                         ? scrolled 
-                          ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                          ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
                           : 'bg-white/20 text-white backdrop-blur-sm'
                         : scrolled
-                          ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
+                          ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
                           : 'text-white hover:bg-white/10'
                     }`}
                   >
@@ -160,10 +160,10 @@ const Navigation = () => {
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`flex items-center px-5 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
+                    className={`flex items-center px-5 py-4 rounded-xl text-lg transition-all duration-200 ${
                       pathname === item.path
-                        ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                        : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
+                        ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                        : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >

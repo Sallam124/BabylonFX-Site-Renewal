@@ -51,10 +51,10 @@ const MobileMenu = ({ isOpen, onClose, navItems, pathname }: MobileMenuProps) =>
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center px-5 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
+                  className={`flex items-center px-5 py-4 rounded-xl text-lg transition-all duration-200 ${
                     pathname === item.path
-                      ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black font-semibold shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:font-semibold hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
+                      ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
+                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
                   }`}
                   onClick={onClose}
                 >

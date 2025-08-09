@@ -7,31 +7,43 @@ export default function RouteLoader() {
   const pathname = usePathname();
   const { loading, setLoading } = useGlobalLoading();
   const [wasLoading, setWasLoading] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const MIN_LOADING_TIME = 350; // Minimum 350ms to show animation
 
-  // Hide spinner as soon as the route changes
+  // Hide spinner with minimum display time
   useEffect(() => {
     if (wasLoading) {
-      setLoading(false);
-      setWasLoading(false);
+      const currentTime = Date.now();
+      const elapsedTime = startTime ? currentTime - startTime : 0;
+      const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+
+      setTimeout(() => {
+        setLoading(false);
+        setWasLoading(false);
+        setStartTime(null);
+      }, remainingTime);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  // Track if loading was triggered
+  // Track if loading was triggered and set start time
   useEffect(() => {
-    if (loading) setWasLoading(true);
+    if (loading) {
+      setWasLoading(true);
+      setStartTime(Date.now());
+    }
   }, [loading]);
 
   if (!loading) return null;
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/65 backdrop-blur-md transition-opacity duration-300">
-      {/* Animated Bar Loader (|||||) - no spinner at the end */}
+      {/* Animated Bar Loader (|||||) - all bars animate */}
       <div className="flex space-x-1 mb-1">
         <span className="block w-2 h-8 bg-white rounded animate-barLoader" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-1" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-2" />
         <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-3" />
-        <span className="block w-2 h-8 bg-white rounded" />
+        <span className="block w-2 h-8 bg-white rounded animate-barLoader bar-delay-4" />
       </div>
       <img
         src="/images/name-logo.svg"
@@ -39,18 +51,7 @@ export default function RouteLoader() {
         className="h-8 w-auto"
         style={{ display: 'block', filter: 'brightness(2.5) contrast(1.2)' }}
       />
-      <style jsx global>{`
-        @keyframes barLoader {
-          0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
-          50% { transform: scaleY(1.2); opacity: 1; }
-        }
-        .animate-barLoader {
-          animation: barLoader 1s infinite cubic-bezier(0.4,0,0.2,1);
-        }
-        .bar-delay-1 { animation-delay: 0.15s; }
-        .bar-delay-2 { animation-delay: 0.3s; }
-        .bar-delay-3 { animation-delay: 0.45s; }
-      `}</style>
+
     </div>
   );
 } 

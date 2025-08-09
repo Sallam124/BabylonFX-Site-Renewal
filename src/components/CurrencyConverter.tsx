@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { formatTimeAgo } from '@/utils/timeUtils'
 import { getExchangeRate } from '@/utils/exchangeRateService'
 import { useExchangeRates } from '@/context/ExchangeRateContext'
+import Decimal from 'decimal.js'
 
 interface CurrencyOption {
   value: string
@@ -61,7 +62,7 @@ const CurrencySelect = ({
               style={{ width: '24px', height: 'auto' }}
             />
           </div>
-          <span className="text-base">{value}</span>
+          <span className="text-base font-times">{value}</span>
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -89,7 +90,10 @@ const CurrencySelect = ({
                   className="rounded-sm w-5 h-auto"
                   style={{ width: '20px', height: 'auto' }}
                 />
-                <span className="text-sm">{option.value}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{option.value}</span>
+                  <span className="text-xs text-gray-500 font-times">{option.label}</span>
+                </div>
               </button>
             ))}
           </div>
@@ -103,32 +107,74 @@ const CurrencyConverter = () => {
   const [amount, setAmount] = useState<string>('100')
   const [fromCurrency, setFromCurrency] = useState('CAD')
   const [toCurrency, setToCurrency] = useState('USD')
-  const [convertedAmount, setConvertedAmount] = useState<number | null>(null)
+  const [convertedAmount, setConvertedAmount] = useState<Decimal | null>(null)
   const [isConverting, setIsConverting] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  const step = 1 // Change this to 0.1 or 0.01 if needed
+  const step = new Decimal(1) // Use Decimal for step increments
 
-  // Top 10 most used currencies in Canada
+  // Extended list of currencies
   const currencies = [
     { code: 'CAD', name: 'Canadian Dollar' },
     { code: 'USD', name: 'United States Dollar' },
     { code: 'EUR', name: 'Euro' },
     { code: 'GBP', name: 'British Pound' },
-    { code: 'INR', name: 'Indian Rupee' },
-    { code: 'CNY', name: 'Chinese Yuan' },
     { code: 'JPY', name: 'Japanese Yen' },
     { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'CHF', name: 'Swiss Franc' },
+    { code: 'CNY', name: 'Chinese Yuan' },
+    { code: 'INR', name: 'Indian Rupee' },
     { code: 'MXN', name: 'Mexican Peso' },
     { code: 'BRL', name: 'Brazilian Real' },
+    { code: 'KRW', name: 'South Korean Won' },
+    { code: 'AED', name: 'UAE Dirham' },
+    { code: 'RUB', name: 'Russian Ruble' },
+    { code: 'SAR', name: 'Saudi Riyal' },
+    { code: 'JOD', name: 'Jordanian Dinar' },
+    { code: 'KWD', name: 'Kuwaiti Dinar' },
+    { code: 'IQD', name: 'Iraqi Dinar' },
+    { code: 'BSD', name: 'Bahamian Dollar' },
+    { code: 'BHD', name: 'Bahraini Dinar' },
+    { code: 'BOB', name: 'Bolivian Boliviano' },
+    { code: 'BGN', name: 'Bulgarian Lev' },
+    { code: 'COP', name: 'Colombian Peso' },
+    { code: 'CRC', name: 'Costa Rican Colón' },
+    { code: 'DOP', name: 'Dominican Peso' },
+    { code: 'EGP', name: 'Egyptian Pound' },
+    { code: 'ETB', name: 'Ethiopian Birr' },
+    { code: 'GYD', name: 'Guyanese Dollar' },
+    { code: 'HNL', name: 'Honduran Lempira' },
+    { code: 'HUF', name: 'Hungarian Forint' },
+    { code: 'IDR', name: 'Indonesian Rupiah' },
+    { code: 'JMD', name: 'Jamaican Dollar' },
+    { code: 'KES', name: 'Kenyan Shilling' },
+    { code: 'NPR', name: 'Nepalese Rupee' },
+    { code: 'NZD', name: 'New Zealand Dollar' },
+    { code: 'NOK', name: 'Norwegian Krone' },
+    { code: 'OMR', name: 'Omani Rial' },
+    { code: 'PKR', name: 'Pakistani Rupee' },
+    { code: 'PEN', name: 'Peruvian Sol' },
+    { code: 'PHP', name: 'Philippine Peso' },
+    { code: 'PLN', name: 'Polish Zloty' },
+    { code: 'QAR', name: 'Qatari Riyal' },
+    { code: 'SGD', name: 'Singapore Dollar' },
+    { code: 'ZAR', name: 'South African Rand' },
+    { code: 'SEK', name: 'Swedish Krona' },
+    { code: 'TWD', name: 'Taiwan Dollar' },
+    { code: 'THB', name: 'Thai Baht' },
+    { code: 'TTD', name: 'Trinidad & Tobago Dollar' },
+    { code: 'TND', name: 'Tunisian Dinar' },
+    { code: 'TRY', name: 'Turkish Lira' },
+    { code: 'VND', name: 'Vietnamese Dong' },
+    { code: 'HKD', name: 'Hong Kong Dollar' },
   ]
 
   const handleIncrement = () => {
     setAmount(prev => {
-      const prevNum = parseFloat(prev) || 0
-      const newAmount = +(prevNum + step).toFixed(2)
+      const prevNum = new Decimal(prev || 0)
+      const newAmount = prevNum.plus(step)
       setTimeout(() => {
         handleConvert(newAmount)
       }, 0)
@@ -138,8 +184,8 @@ const CurrencyConverter = () => {
 
   const handleDecrement = () => {
     setAmount(prev => {
-      const prevNum = parseFloat(prev) || 0
-      const newAmount = Math.max(0, +(prevNum - step).toFixed(2))
+      const prevNum = new Decimal(prev || 0)
+      const newAmount = Decimal.max(prevNum.minus(step), 0)
       setTimeout(() => {
         handleConvert(newAmount)
       }, 0)
@@ -179,45 +225,60 @@ const CurrencyConverter = () => {
     }
   }, [rates, ratesLoading, refreshRates]);
 
-  // Extract conversion logic to a separate function
-  const handleConvert = async (numericAmount?: number) => {
-    const amountToConvert = numericAmount !== undefined ? numericAmount : parseFloat(amount);
-    if (!amount || amountToConvert <= 0 || isNaN(amountToConvert)) {
+  // Extract conversion logic to a separate function with Decimal precision
+  const handleConvert = async (numericAmount?: Decimal) => {
+    const amountToConvert = numericAmount !== undefined ? numericAmount : new Decimal(amount || 0);
+    
+    // Handle zero or negative amounts immediately
+    if (amountToConvert.isZero() || amountToConvert.isNegative()) {
       setConvertedAmount(null);
       setIsConverting(false);
+      setError(null);
       return;
     }
+    
+    // Handle same currency conversion
     if (fromCurrency === toCurrency) {
       setConvertedAmount(amountToConvert);
       setLastUpdated(new Date().toISOString());
       setIsConverting(false);
+      setError(null);
       return;
     }
-    setIsConverting(true);
+    
     setError(null);
-    // Use cached CAD-based rates for any pair
+    
+    // Use cached CAD-based rates for any pair with Decimal precision
     if (rates) {
-      const cadToFrom = fromCurrency === 'CAD' ? 1 : rates[fromCurrency];
-      const cadToTo = toCurrency === 'CAD' ? 1 : rates[toCurrency];
-      if (cadToFrom && cadToTo) {
-        let rate;
-        if (fromCurrency === 'CAD') {
-          rate = cadToTo;
-        } else if (toCurrency === 'CAD') {
-          rate = 1 / cadToFrom;
-        } else {
-          rate = cadToTo / cadToFrom;
-        }
-        setConvertedAmount(amountToConvert * rate);
-        setLastUpdated(contextLastUpdated);
+      const cadToFrom = fromCurrency === 'CAD' ? new Decimal(1) : new Decimal(rates[fromCurrency] || 0);
+      const cadToTo = toCurrency === 'CAD' ? new Decimal(1) : new Decimal(rates[toCurrency] || 0);
+      
+      if (cadToFrom.isZero() || cadToTo.isZero()) {
+        setError('Exchange rate not available');
+        setConvertedAmount(null);
         setIsConverting(false);
         return;
       }
+      
+      let rate: Decimal;
+      if (fromCurrency === 'CAD') {
+        rate = cadToTo;
+      } else if (toCurrency === 'CAD') {
+        rate = new Decimal(1).dividedBy(cadToFrom);
+      } else {
+        rate = cadToTo.dividedBy(cadToFrom);
+      }
+      
+      setConvertedAmount(amountToConvert.times(rate));
+      setLastUpdated(contextLastUpdated);
+      setIsConverting(false);
+      return;
     }
+    
     // Fallback: fetch directly if not in cache
     try {
       const rate = await getExchangeRate(fromCurrency, toCurrency);
-      setConvertedAmount(amountToConvert * rate);
+      setConvertedAmount(amountToConvert.times(new Decimal(rate)));
       setLastUpdated(new Date().toISOString());
     } catch (err) {
       setError('Failed to fetch rate.');
@@ -229,7 +290,30 @@ const CurrencyConverter = () => {
 
   useEffect(() => {
     const debounceHandler = setTimeout(() => {
-      handleConvert()
+      // Check if amount is zero, empty, or invalid before converting to Decimal
+      const trimmedAmount = amount?.trim();
+      if (!trimmedAmount || trimmedAmount === '0' || trimmedAmount === '00' || parseFloat(trimmedAmount) === 0) {
+        // Clear conversion result and stop loading for zero amounts
+        setConvertedAmount(null);
+        setIsConverting(false);
+        setError(null);
+        return;
+      }
+      
+      const currentAmount = new Decimal(trimmedAmount);
+      // Only convert if amount is valid (not zero or negative)
+      if (!currentAmount.isZero() && !currentAmount.isNegative()) {
+        // Set loading state immediately and clear previous result
+        setIsConverting(true);
+        setConvertedAmount(null);
+        setError(null);
+        handleConvert();
+      } else {
+        // Clear conversion result and stop loading for invalid amounts
+        setConvertedAmount(null);
+        setIsConverting(false);
+        setError(null);
+      }
     }, 300)
 
     return () => clearTimeout(debounceHandler)
@@ -245,7 +329,17 @@ const CurrencyConverter = () => {
     const flagMap: { [key: string]: string } = {
       CAD: 'cad.png', USD: 'usa.png', EUR: 'eu.png', GBP: 'gb.png', 
       INR: 'in.png', CNY: 'cn.png', JPY: 'jp.png', AUD: 'au.png', 
-      MXN: 'mx.png', BRL: 'br.png'
+      MXN: 'mx.png', BRL: 'br.png', KRW: 'kr.png', AED: 'ae.png',
+      RUB: 'ru.png', SAR: 'sa.png', JOD: 'jo.png', KWD: 'kw.png',
+      IQD: 'iq.png', BSD: 'bs.png', BHD: 'bh.png', BOB: 'bo.png',
+      BGN: 'bg.png', COP: 'co.png', CRC: 'cr.png', DOP: 'do.png',
+      EGP: 'eg.png', ETB: 'et.png', GYD: 'gy.png', HNL: 'hn.png',
+      HUF: 'hu.png', IDR: 'id.png', JMD: 'jm.png', KES: 'ke.png',
+      NPR: 'np.png', NZD: 'nz.png', NOK: 'no.png', OMR: 'om.png',
+      PKR: 'pk.png', PEN: 'pe.png', PHP: 'ph.png', PLN: 'pl.png',
+      QAR: 'qa.png', SGD: 'sg.png', ZAR: 'za.png', SEK: 'se.png',
+      TWD: 'tw.png', THB: 'th.png', TTD: 'tt.png', TND: 'tn.png',
+      TRY: 'tr.png', VND: 'vn.png', HKD: 'hk.png', CHF: 'ch.png'
     }
     return `/images/flags/${flagMap[currencyCode.toUpperCase()] || 'default.png'}`
   }
@@ -256,46 +350,41 @@ const CurrencyConverter = () => {
     flag: getFlagPath(currency.code)
   }))
 
-  // Removed auto-refresh interval to prevent unwanted API calls
-  // Users can manually refresh when needed
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 && !isConverting) {
-  //       handleConvert(parseFloat(amount))
-  //     }
-  //   }, 30000) // Refresh every 30 seconds
-  //   return () => clearInterval(interval)
-  // }, [amount, fromCurrency, toCurrency, isConverting])
-
   // Refresh handler - improved version
   const handleRefresh = async () => {
     if (refreshRates) {
       setIsConverting(true);
       setError(null);
-      await refreshRates();
-      setIsConverting(false);
-      // Optionally, re-run conversion after refresh
-      handleConvert();
+      try {
+        await refreshRates();
+        // Re-run conversion after refresh if amount is valid
+        const currentAmount = new Decimal(amount || 0);
+        if (!currentAmount.isZero() && !currentAmount.isNegative()) {
+          handleConvert();
+        }
+      } catch (error) {
+        setError('Failed to refresh rates');
+      } finally {
+        setIsConverting(false);
+      }
     }
   };
 
-  useEffect(() => {
-    if (isConverting && convertedAmount !== null) {
-      setIsConverting(false);
-    }
-  }, [isConverting, convertedAmount]);
+  // Remove this useEffect as it's interfering with the loading state
+  // The loading state should only be managed by handleConvert and the main useEffect
 
-  // Helper to get the current exchange rate for the selected pair
-  const getCurrentRate = () => {
-    if (fromCurrency === toCurrency) return 1;
+  // Helper to get the current exchange rate for the selected pair with Decimal precision
+  const getCurrentRate = (): Decimal | null => {
+    if (fromCurrency === toCurrency) return new Decimal(1);
     if (rates) {
-      const cadToFrom = fromCurrency === 'CAD' ? 1 : rates[fromCurrency];
-      const cadToTo = toCurrency === 'CAD' ? 1 : rates[toCurrency];
-      if (cadToFrom && cadToTo) {
-        if (fromCurrency === 'CAD') return cadToTo;
-        if (toCurrency === 'CAD') return 1 / cadToFrom;
-        return cadToTo / cadToFrom;
-      }
+      const cadToFrom = fromCurrency === 'CAD' ? new Decimal(1) : new Decimal(rates[fromCurrency] || 0);
+      const cadToTo = toCurrency === 'CAD' ? new Decimal(1) : new Decimal(rates[toCurrency] || 0);
+      
+      if (cadToFrom.isZero() || cadToTo.isZero()) return null;
+      
+      if (fromCurrency === 'CAD') return cadToTo;
+      if (toCurrency === 'CAD') return new Decimal(1).dividedBy(cadToFrom);
+      return cadToTo.dividedBy(cadToFrom);
     }
     return null;
   };
@@ -312,7 +401,7 @@ const CurrencyConverter = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 !pointer-events-auto !opacity-100 !z-[10] relative">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Currency Converter</h2>
+        <h2 className="text-3xl text-gray-900 font-times font-normal">Currency Converter</h2>
         <button
           onClick={handleRefresh}
           disabled={isConverting}
@@ -347,7 +436,21 @@ const CurrencyConverter = () => {
               id="amount"
               name="amount"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Prevent minus sign and negative numbers completely
+                if (value === '' || (!value.includes('-') && parseFloat(value) >= 0)) {
+                  setAmount(value);
+                }
+              }}
+              onKeyDown={(e) => {
+                // Prevent minus sign from being typed
+                if (e.key === '-') {
+                  e.preventDefault();
+                }
+              }}
+              min="0"
+              step="0.01"
               className="block w-full rounded-md border-2 border-gray-200 pl-3 pr-16 focus:border-primary focus:ring-primary text-2xl py-4 hover:border-gray-300 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
               title="Enter amount to convert"
@@ -355,7 +458,7 @@ const CurrencyConverter = () => {
             
             {/* Currency Label - Right Side */}
             <div className="absolute inset-y-0 right-0 flex items-center pr-16">
-              <span className="text-gray-500 text-lg">{fromCurrency}</span>
+              <span className="text-gray-500 text-lg font-times">{fromCurrency}</span>
             </div>
             
             {/* Increment/Decrement Arrows - Right Side */}
@@ -411,12 +514,12 @@ const CurrencyConverter = () => {
           
           <button
             onClick={handleSwapCurrencies}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center space-x-2"
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center space-x-2"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
-            <span>Swap Currencies</span>
+            <span >Swap Currencies</span>
           </button>
         </div>
       </div>
@@ -424,37 +527,46 @@ const CurrencyConverter = () => {
       {/* Conversion Result */}
       <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
         <div className="flex justify-between items-center min-h-[80px]">
-          {isConverting || convertedAmount === null ? (
-            <div className="flex flex-col items-center justify-center w-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
-              <p className="text-gray-600 text-base font-medium">Converting...</p>
-            </div>
-          ) : (
-            <>
-              <div>
-                <p className="text-sm text-gray-600">Converted Amount</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {convertedAmount !== null && amount && !isNaN(parseFloat(amount)) ? convertedAmount.toFixed(2) : '---'}
-                </p>
-                <p className="text-sm text-gray-500">{toCurrency}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Exchange Rate</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {(() => {
-                    const rate = getCurrentRate();
-                    return rate !== null ? rate.toFixed(4) : '---';
-                  })()}
-                </p>
-                <p className="text-xs text-gray-500">Live Rate</p>
-              </div>
-            </>
-          )}
+          {(() => {
+            const trimmedAmount = amount?.trim();
+            const isZeroAmount = !trimmedAmount || trimmedAmount === '0' || trimmedAmount === '00' || parseFloat(trimmedAmount) === 0;
+            
+            if (isConverting && !isZeroAmount) {
+              return (
+                <div className="flex flex-col items-center justify-center w-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
+                  <p className="text-gray-600 text-base font-medium">Converting...</p>
+                </div>
+              );
+            }
+            
+            return (
+              <>
+                <div>
+                  <p className="text-sm text-gray-600">Converted Amount</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {isZeroAmount ? '0.00' : (convertedAmount !== null && amount && !new Decimal(amount).isNaN() ? convertedAmount.toFixed(2) : '---')}
+                  </p>
+                  <p className="text-sm text-gray-500 font-times">{toCurrency}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 font-sans">Exchange Rate</p>
+                  <p className="text-lg font-semibold text-gray-900 font-times">
+                    {(() => {
+                      const rate = getCurrentRate();
+                      return rate !== null ? rate.toFixed(4) : '---';
+                    })()}
+                  </p>
+                  <p className="text-xs text-gray-500 font-sans">Live Rate</p>
+                </div>
+              </>
+            );
+          })()}
         </div>
         
         {lastUpdated && (
           <div className="mt-4 pt-4 border-t border-blue-200">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 font-sans">
               Last updated: {formatTimeAgo(lastUpdated)}
             </p>
           </div>

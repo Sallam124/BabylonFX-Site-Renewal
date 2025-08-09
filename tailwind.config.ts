@@ -12,6 +12,12 @@ const config: Config = {
   },
   theme: {
     extend: {
+      fontFamily: {
+        'times': ['Times New Roman', 'Times', 'serif'],
+        'ciguatera': ['Playfair Display', 'serif'],
+        'cambria': ['Cambria', 'Georgia', 'serif'],
+        'pmingliu': ['PMingLiU-ExtB', 'serif'],
+      },
       colors: {
         primary: {
           DEFAULT: '#1a365d', // Navy
