@@ -56,7 +56,7 @@ const FAQs = () => {
   return (
     <>
       <PageContainer>
-        <div className="max-w-3xl mx-auto mt-8 mb-8 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-3xl mx-auto mt-8 mb-8 px-4 sm:px-6 lg:px-8 text-center inter">
           <h2 className="text-5xl font-extrabold text-primary mb-8 fade-in-up">
             Find answers to common questions
           </h2>
