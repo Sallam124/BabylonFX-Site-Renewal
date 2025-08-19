@@ -105,8 +105,8 @@ const CurrencySelect = ({
 
 const CurrencyConverter = () => {
   const [amount, setAmount] = useState<string>('100')
-  const [fromCurrency, setFromCurrency] = useState('CAD')
-  const [toCurrency, setToCurrency] = useState('USD')
+  const [fromCurrency, setFromCurrency] = useState('USD')
+  const [toCurrency, setToCurrency] = useState('CAD')
   const [convertedAmount, setConvertedAmount] = useState<Decimal | null>(null)
   const [isConverting, setIsConverting] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)

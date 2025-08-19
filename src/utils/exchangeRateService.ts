@@ -9,20 +9,7 @@ interface ExchangeRateResponse {
   source: string;
 }
 
-// Mock exchange rates as fallback when APIs fail
-export const mockRates: { [key: string]: number } = {
-  'USD': 0.74, 'EUR': 0.68, 'GBP': 0.58, 'JPY': 110.5, 'AUD': 1.12,
-  'CNY': 5.35, 'DKK': 5.08, 'CHF': 0.65, 'INR': 61.8, 'MXN': 12.45,
-  'BRL': 3.67, 'KRW': 990.2, 'AED': 2.72, 'RUB': 67.8, 'SAR': 2.78,
-  'JOD': 0.52, 'KWD': 0.23, 'IQD': 1080.5, 'BSD': 0.74, 'BHD': 0.28,
-  'BOB': 5.12, 'BGN': 1.33, 'COP': 2900.8, 'CRC': 380.5, 'DOP': 43.2,
-  'EGP': 22.8, 'ETB': 42.1, 'GYD': 154.7, 'HNL': 18.3, 'HUF': 260.4,
-  'IDR': 11500.2, 'JMD': 114.8, 'KES': 118.9, 'NPR': 98.4, 'NZD': 1.21,
-  'NOK': 7.85, 'OMR': 0.28, 'PKR': 205.6, 'PEN': 2.78, 'PHP': 41.2,
-  'PLN': 2.98, 'QAR': 2.70, 'SGD': 1.00, 'ZAR': 13.8, 'SEK': 7.65,
-  'TWD': 23.4, 'THB': 26.8, 'TTD': 5.02, 'TND': 2.31, 'TRY': 20.1,
-  'VND': 18250.3, 'HKD': 5.78
-};
+
 
 // Module-level cache
 let cachedRates: { [key: string]: number } | null = null;
@@ -70,19 +57,15 @@ async function _fetchBulkRates(baseCurrency: string, targetCurrencies: string[])
       if (response.data.rates[currency]) {
         rates[currency] = response.data.rates[currency];
       } else {
-        // Fallback to mock rate if not found
-        rates[currency] = mockRates[currency] || 1;
+        // Skip currencies not found in API response
+        console.warn(`Rate not found for ${currency}`);
       }
     });
 
     return rates;
   } catch (error) {
-    // Return mock rates as fallback
-    const rates: {[key: string]: number} = {};
-    normalizedTargets.forEach(currency => {
-      rates[currency] = mockRates[currency] || 1;
-    });
-    return rates;
+    console.error('Failed to fetch exchange rates:', error);
+    throw new Error('Failed to fetch exchange rates from API');
   }
 }
 
@@ -123,8 +106,8 @@ export async function getExchangeRate(from: string, to: string): Promise<number>
     const rate = response.data.rates[to];
     return rate;
   } catch (error) {
-    // Return mock rate as fallback
-    return mockRates[to] || 1;
+    console.error(`Failed to fetch exchange rate for ${to}:`, error);
+    throw new Error(`Failed to fetch exchange rate for ${to}`);
   }
 }
 
@@ -144,7 +127,7 @@ export function isValidCurrencyCode(code: string): boolean {
  */
 export function getSupportedCurrencies(): string[] {
   return [
-    'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'INR', 'MXN',
+    'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'DKK', 'INR', 'MXN',
     'BRL', 'KRW', 'AED', 'RUB', 'SAR', 'JOD', 'KWD', 'IQD', 'BSD', 'BHD',
     'BOB', 'BGN', 'COP', 'CRC', 'DOP', 'EGP', 'ETB', 'GYD', 'HNL', 'HUF',
     'IDR', 'JMD', 'KES', 'NPR', 'NZD', 'NOK', 'OMR', 'PKR', 'PEN', 'PHP',

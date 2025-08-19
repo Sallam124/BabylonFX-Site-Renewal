@@ -116,8 +116,8 @@ export default function RatesPage() {
           currency,
           countryName: countryNames[currency] || currency,
           flag: getFlagPath(currency),
-          buyRate: contextRates[currency] ? contextRates[currency] * (1 + spread) : 0,
-          sellRate: contextRates[currency] ? contextRates[currency] * (1 - spread) : 0,
+          buyRate: contextRates[currency] ? (1 / contextRates[currency]) * (1 + spread) : 0,
+          sellRate: contextRates[currency] ? (1 / contextRates[currency]) * (1 - spread) : 0,
           isLoading: false,
           error: null
         }))
