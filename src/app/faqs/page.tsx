@@ -63,31 +63,31 @@ const FAQs = () => {
         </div>
 
         {/* FAQs Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
           <div className="max-w-3xl mx-auto">
-            <div className="bg-gray-50 rounded-lg shadow p-8 border border-gray-200">
+            <div className="bg-gray-900 rounded-lg shadow p-8 border border-gray-800">
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
                   <div key={index} className={`fade-in-up${index > 8 ? '-delay-8' : index > 0 ? `-delay-${index}` : ''}`}>
                     <div
-                      className="bg-white rounded-lg shadow-md overflow-hidden"
+                      className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700"
                     >
                       <button
                         className="w-full px-6 py-4 text-left focus:outline-none"
                         onClick={() => toggleFAQ(index)}
                       >
                         <div className="flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-primary">
+                          <h3 className="text-lg font-bold text-white font-ciguatera">
                             {faq.question}
                           </h3>
-                          <span className="text-secondary">
+                          <span className="text-[#FFD700] text-xl font-bold">
                             {openIndex === index ? '\u2212' : '+'}
                           </span>
                         </div>
                       </button>
                       {openIndex === index && (
                         <div className="px-6 pb-4">
-                          <p className="text-gray-600">{faq.answer}</p>
+                          <p className="text-white font-semibold">{faq.answer}</p>
                         </div>
                       )}
                     </div>

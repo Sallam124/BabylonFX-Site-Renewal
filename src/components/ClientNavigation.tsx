@@ -82,7 +82,7 @@ const ClientNavigation = () => {
       <nav className={`fixed w-full z-50 transition-all duration-500 transition-colors transition-opacity ${
         scrolled 
           ? 'bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20' 
-          : 'bg-gradient-to-r from-[#1a1a2e] to-[#e94560]'
+          : 'bg-gradient-to-r from-black to-gray-800'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">

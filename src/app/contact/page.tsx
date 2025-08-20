@@ -105,28 +105,29 @@ const Contact = () => {
     <>
       <PageContainer>
         {/* Map Section - now at the top */}
-        <section className="px-4 sm:px-6 lg:px-8">
+        <section className="px-4 sm:px-6 lg:px-8 bg-black py-16">
           <div className="max-w-7xl mx-auto">
-            <div className="bg-white p-8 rounded-lg shadow-lg mb-12 fade-in-up">
-              <div className="w-full">
-                <h2 className="font-extrabold text-5xl text-gray-800 mb-6 text-center">Our Locations</h2>
-                <LocationMap />
-              </div>
+            <div className="bg-gray-900 p-8 rounded-lg shadow-lg mb-12 fade-in-up border border-gray-800">
+              <h2 className="font-extrabold text-5xl text-white mb-6 text-center font-ciguatera">Our Locations</h2>
+              <p className="text-xl text-white text-center mb-8 font-semibold">
+                Visit us at any of our convenient locations across Canada
+              </p>
+              <LocationMap />
             </div>
           </div>
         </section>
 
-        {/* Contact Form and Info */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        {/* Contact Form Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {/* Contact Form */}
               <AnimateOnScroll>
-                <div className="bg-white p-8 rounded-lg shadow-lg fade-in-up">
-                  <h2 className="text-2xl font-bold text-primary mb-6">Send us a Message</h2>
+                <div className="bg-gray-900 p-8 rounded-lg shadow-lg fade-in-up border border-gray-800">
+                  <h2 className="text-2xl font-bold text-[#FFD700] mb-6 font-ciguatera">Send us a Message</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="name" className="block text-sm font-medium text-white">
                         Name
                       </label>
                       <input
@@ -136,11 +137,11 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700] bg-gray-800 text-white"
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="email" className="block text-sm font-medium text-white">
                         Email
                       </label>
                       <input
@@ -150,11 +151,11 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700] bg-gray-800 text-white"
                       />
                     </div>
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="phone" className="block text-sm font-medium text-white">
                         Phone
                       </label>
                       <input
@@ -163,11 +164,11 @@ const Contact = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700] bg-gray-800 text-white"
                       />
                     </div>
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="subject" className="block text-sm font-medium text-white">
                         Subject
                       </label>
                       <select
@@ -176,7 +177,7 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700] bg-gray-800 text-white"
                       >
                         <option value="">Select a subject</option>
                         <option value="general">General Inquiry</option>
@@ -186,7 +187,7 @@ const Contact = () => {
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="message" className="block text-sm font-medium text-white">
                         Message
                       </label>
                       <textarea
@@ -196,44 +197,45 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         rows={4}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700] bg-gray-800 text-white"
                       />
                     </div>
                     <div>
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-bold py-3 px-4 rounded-2xl shadow-md transition-all duration-300 disabled:opacity-50 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                        className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#B8860B] hover:to-[#FFD700] text-black font-bold py-3 px-4 rounded-2xl shadow-md transition-all duration-300 disabled:opacity-50 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#FFD700] font-ciguatera"
                       >
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                       </button>
                     </div>
                     {submitStatus === 'success' && (
-                      <div className="text-green-600 text-center mt-6 border-t border-gray-200 pt-6">
+                      <div className="text-green-400 text-center mt-6 border-t border-gray-700 pt-6">
                         Thank you for your message. We'll get back to you soon!
                       </div>
                     )}
                     {submitStatus === 'error' && (
-                      <div className="text-red-600 text-center">
+                      <div className="text-red-400 text-center">
                         Sorry, there was an error sending your message. Please try again.
                       </div>
                     )}
                   </form>
                 </div>
               </AnimateOnScroll>
+              
               {/* Contact Information */}
               <AnimateOnScroll>
-                <div className="bg-white p-8 rounded-lg shadow-lg fade-in-up-delay-1">
-                  <h2 className="text-2xl font-bold text-primary mb-6">Our Information</h2>
+                <div className="bg-gray-900 p-8 rounded-lg shadow-lg fade-in-up-delay-1 border border-gray-800">
+                  <h2 className="text-2xl font-bold text-[#FFD700] mb-6 font-ciguatera">Our Information</h2>
                   {/* General Contact Info */}
-                  <div className="mb-4 p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100">
+                  <div className="mb-4 p-4 bg-gray-800 rounded-xl border border-gray-700">
                     <div className="flex items-center">
-                      <svg className="w-6 h-6 text-[#ffd700] mr-3" fill="none" stroke="black" viewBox="1 0 24 24">
+                      <svg className="w-6 h-6 text-[#FFD700] mr-3" fill="none" stroke="currentColor" viewBox="1 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                       <a 
                         href="mailto:info@babylonfx.com"
-                        className="text-gray-600 hover:text-[#d4af37] transition-all duration-300 -ml-1"
+                        className="text-white hover:text-[#FFD700] transition-all duration-300 -ml-1"
                       >
                         info@babylonfx.com
                       </a>
@@ -241,8 +243,8 @@ const Contact = () => {
                   </div>
                   <div className="space-y-6">
                     {locations.map((location) => (
-                      <div key={location.name} className="border-b border-gray-200 pb-6 last:border-0 last:pb-0">
-                        <h3 className="text-lg font-semibold text-gray-900">{location.name}</h3>
+                      <div key={location.name} className="border-b border-gray-700 pb-6 last:border-0 last:pb-0">
+                        <h3 className="text-lg font-semibold text-white font-ciguatera">{location.name}</h3>
                         <div className="flex items-start mt-2">
                           <Image
                             src="/icons/pin.png"
@@ -255,7 +257,7 @@ const Contact = () => {
                             href={location.mapsUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-600 hover:text-[#d4af37] transition-all duration-300"
+                            className="text-white hover:text-[#FFD700] transition-all duration-300"
                           >
                             {location.address}
                           </a>
@@ -270,14 +272,14 @@ const Contact = () => {
                           />
                           <a 
                             href={`tel:${location.phone.replace(/\s+/g, '')}`}
-                            className="text-gray-600 hover:text-[#d4af37] transition-all duration-300"
+                            className="text-white hover:text-[#FFD700] transition-all duration-300"
                           >
                             {location.phone}
                           </a>
                         </div>
                         <div className="mt-2">
                           {location.hours.map((hour, index) => (
-                            <p key={index} className="text-gray-600 text-sm">{hour}</p>
+                            <p key={index} className="text-gray-300 text-sm">{hour}</p>
                           ))}
                         </div>
                       </div>

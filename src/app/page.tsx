@@ -5,11 +5,92 @@ import CurrencyConverterWrapper from '@/components/CurrencyConverterWrapper'
 import AnimateOnScroll from '@/components/AnimateOnScroll'
 import { useRouter } from 'next/navigation'
 import { useGlobalLoading } from '@/context/GlobalLoadingContext'
-import { motion } from 'framer-motion'
+
 import FeatureCard from '@/components/FeatureCard'
 import { Inter, IBM_Plex_Sans, DM_Serif_Display, Marcellus } from 'next/font/google'
 
 const currentYear = new Date().getFullYear()
+
+// Currency Background Component
+const CurrencyBackground = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Floating Dollar Bills */}
+      <div className="absolute top-20 left-10 text-green-500 opacity-20 animate-float-1">
+        <svg width="60" height="30" viewBox="0 0 60 30" fill="currentColor">
+          <rect width="60" height="30" rx="3" fill="currentColor"/>
+          <text x="30" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$100</text>
+        </svg>
+      </div>
+
+      <div className="absolute top-40 right-20 text-green-500 opacity-15 animate-float-2">
+        <svg width="50" height="25" viewBox="0 0 50 25" fill="currentColor">
+          <rect width="50" height="25" rx="3" fill="currentColor"/>
+          <text x="25" y="17" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">$50</text>
+        </svg>
+      </div>
+
+      {/* Floating Coins */}
+      <div className="absolute top-60 left-32 text-yellow-500 opacity-25 animate-spin-slow">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+          <circle cx="20" cy="20" r="18" fill="currentColor"/>
+          <circle cx="20" cy="20" r="15" fill="white"/>
+          <text x="20" y="25" textAnchor="middle" fill="currentColor" fontSize="12" fontWeight="bold">¢</text>
+        </svg>
+      </div>
+
+      <div className="absolute top-80 right-40 text-yellow-500 opacity-20 animate-spin-reverse">
+        <svg width="35" height="35" viewBox="0 0 35 35" fill="currentColor">
+          <circle cx="17.5" cy="17.5" r="16" fill="currentColor"/>
+          <circle cx="17.5" cy="17.5" r="13" fill="white"/>
+          <text x="17.5" y="22" textAnchor="middle" fill="currentColor" fontSize="10" fontWeight="bold">$</text>
+        </svg>
+      </div>
+
+      {/* Canadian Bills */}
+      <div className="absolute top-32 left-1/4 text-red-500 opacity-15 animate-float-3">
+        <svg width="55" height="28" viewBox="0 0 55 28" fill="currentColor">
+          <rect width="55" height="28" rx="3" fill="currentColor"/>
+          <text x="27.5" y="19" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">C$20</text>
+        </svg>
+      </div>
+
+      <div className="absolute top-72 right-1/3 text-red-500 opacity-20 animate-float-4">
+        <svg width="45" height="23" viewBox="0 0 45 23" fill="currentColor">
+          <rect width="45" height="23" rx="3" fill="currentColor"/>
+          <text x="22.5" y="15" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">C$10</text>
+        </svg>
+      </div>
+
+      {/* Euro Symbol */}
+      <div className="absolute top-48 left-1/2 text-blue-500 opacity-15 animate-pulse-slow">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor">
+          <circle cx="15" cy="15" r="14" fill="currentColor"/>
+          <text x="15" y="21" textAnchor="middle" fill="white" fontSize="18" fontWeight="bold">€</text>
+        </svg>
+      </div>
+
+      {/* Pound Symbol */}
+      <div className="absolute top-64 right-1/4 text-purple-500 opacity-15 animate-pulse-slow">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+          <circle cx="16" cy="16" r="15" fill="currentColor"/>
+          <text x="16" y="22" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">£</text>
+        </svg>
+      </div>
+
+      {/* Subtle Grid Pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
+    </div>
+  )
+}
 
 const footerLinks = {
   services: [
@@ -116,15 +197,16 @@ export default function Home() {
 
   return (
     <>
+      <CurrencyBackground />
       <PageContainer>
         {/* Hero Section */}
-        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-wide mb-2 text-primary italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center ${dmSerifDisplay.className}`}>
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8 bg-black py-16">
+          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-wide mb-2 text-white italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center font-ciguatera`}>
             Effortless Currency Exchange
           </h1>
           <div className="mt-0 max-w-3xl mx-auto text-center fade-in-up-delay-1">
-            <div className="text-2xl md:text-4xl  text-black leading-snug font-ciguatera">Fast, Reliable & Simple.</div>
-            <div className={`text-lg md:text-xl text-gray-600 italic mt-0.5 ${marcellus.className}`}>Delivered to you by BabylonFX.</div>
+            <div className="text-2xl md:text-4xl text-[#FFD700] leading-snug font-ciguatera font-bold">Fast, Reliable & Simple.</div>
+            <div className={`text-lg md:text-xl text-white italic mt-0.5 font-semibold`}>Delivered to you by BabylonFX.</div>
           </div>
         </div>
 
@@ -137,13 +219,13 @@ export default function Home() {
 
         {/* Features Section */}
         <AnimateOnScroll>
-          <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4 fade-in-up">
+                <h2 className="text-3xl font-bold text-[#FFD700] mb-4 fade-in-up font-ciguatera">
                   Why Choose BabylonFX?
                 </h2>
-                <p className="text-xl text-gray-700 fade-in-up-delay-1">
+                <p className="text-xl text-white fade-in-up-delay-1 font-semibold">
                   Experience the difference with our comprehensive currency exchange services
                 </p>
               </div>
@@ -177,21 +259,20 @@ export default function Home() {
                     }
                     return (
                       <React.Fragment key={index}>
-                        <motion.div
-                          className="absolute w-[220px] h-[340px]"
-                          animate={{
+                        <div
+                          className="absolute w-[220px] h-[340px] transition-all duration-300 ease-out"
+                          style={{ 
+                            zIndex: index,
                             left: stackOpen ? leftSpread : leftStacked,
-                            rotateZ: stackOpen ? rotateZ : 0,
+                            transform: `rotateZ(${stackOpen ? rotateZ : 0}deg)`
                           }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                          style={{ zIndex: index }}
                         >
                           <div className="relative w-full h-full"
                             onMouseEnter={() => setStackOpen(true)}
                           >
                             <FeatureCard feature={feature} />
                     </div>
-                        </motion.div>
+                        </div>
                         {/* Add a hoverable gap between cards except after the last card */}
                         {index < features.length - 1 && (
                           <div
@@ -263,24 +344,24 @@ export default function Home() {
 
         {/* Call to Action */}
         <AnimateOnScroll>
-          <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#4a3d2a] text-white relative overflow-hidden">
+          <section className="py-20 px-4 sm:px-6 lg:px-8 bg-black text-white relative overflow-hidden">
             {/* Background Pattern */}
             <div
               className="pointer-events-none absolute -bottom-32 -right-32 w-[800px] h-[800px] rounded-full blur-3xl"
               style={{
                 opacity: 0.05,
-                background: "radial-gradient(circle at 70% 70%, #a78bfa 0%, #60a5fa 10%, transparent 30%)"
+                background: "radial-gradient(circle at 70% 70%, #FFD700 0%, #B8860B 10%, transparent 30%)"
               }}
             ></div>
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="text-center mb-12">
                 <div className="text-4xl md:text-5xl font-bold mb-6 fade-in-up"
                     style={{
-                      background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                      background: "linear-gradient(90deg, #FFD700 0%, #FFD700 60%, #fff 100%)",
                       WebkitBackgroundClip: "text",
                       backgroundClip: "text",
                       WebkitTextFillColor: "transparent",
-                      filter: "drop-shadow(0 0 8px rgba(255, 231, 178, 0.2))",
+                      filter: "drop-shadow(0 0 8px rgba(255, 215, 0, 0.2))",
                       display: "inline-block",
                     }}>
                   Ready to Get Started?
@@ -328,11 +409,11 @@ export default function Home() {
                 <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
                   <div className="text-3xl font-bold mb-4"
                       style={{
-                        background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                        background: "linear-gradient(90deg, #FFD700 0%, #FFD700 60%, #fff 100%)",
                         WebkitBackgroundClip: "text",
                         backgroundClip: "text",
                         WebkitTextFillColor: "transparent",
-                        filter: "drop-shadow(0 0 0.5px rgba(255, 231, 178, 0.005))",
+                        filter: "drop-shadow(0 0 0.5px rgba(255, 215, 0, 0.005))",
                         display: "inline-block",
                       }}>
                     BabylonFX

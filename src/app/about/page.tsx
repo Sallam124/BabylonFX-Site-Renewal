@@ -38,27 +38,27 @@ const About = () => {
         </div>
 
         {/* Company Story */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="fade-in-up">
-                <h2 className="text-3xl font-bold text-primary mb-6 fade-in-up-delay-0">
+                <h2 className="text-3xl font-bold text-[#FFD700] mb-6 fade-in-up-delay-0 font-ciguatera">
                   Our Story
                 </h2>
-                <p className="text-gray-600 mb-4 fade-in-up-delay-1">
+                <p className="text-white mb-4 fade-in-up-delay-1 font-semibold">
                   Founded in 2010, BabylonFX has grown from a single location in
                   Toronto to become one of Canada's most trusted currency
                   exchange providers. Our commitment to transparency,
                   competitive rates, and exceptional customer service has helped
                   us build lasting relationships with our clients.
                 </p>
-                <p className="text-gray-600 mb-4 fade-in-up-delay-1">
+                <p className="text-white mb-4 fade-in-up-delay-1 font-semibold">
                   We understand that currency exchange is more than just numbers
                   - it's about helping people achieve their goals, whether
                   they're traveling abroad, sending money to loved ones, or
                   managing international business transactions.
                 </p>
-                <p className="text-gray-600 fade-in-up-delay-1">
+                <p className="text-white fade-in-up-delay-1 font-semibold">
                   Today, we continue to innovate and expand our services while
                   maintaining the personal touch that sets us apart from larger
                   financial institutions.
@@ -78,40 +78,40 @@ const About = () => {
 
         {/* Values */}
         <AnimateOnScroll>
-          <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
             <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-primary text-center mb-12 fade-in-up">
+              <h2 className="text-3xl font-bold text-[#FFD700] text-center mb-12 fade-in-up font-ciguatera">
                 Our Values
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up">
-                  <div className="text-secondary text-4xl mb-4">🎯</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
+                <div className="bg-gray-900 p-6 rounded-lg shadow-md fade-in-up border border-gray-800">
+                  <div className="text-[#FFD700] text-4xl mb-4">🎯</div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-ciguatera">
                     Integrity
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-white font-semibold">
                     We believe in transparent pricing and honest communication
                     with our clients.
                   </p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up-delay-1">
-                  <div className="text-secondary text-4xl mb-4">🤝</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
+                <div className="bg-gray-900 p-6 rounded-lg shadow-md fade-in-up-delay-1 border border-gray-800">
+                  <div className="text-[#FFD700] text-4xl mb-4">🤝</div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-ciguatera">
                     Customer Focus
                   </h3>
-                  <p className="text-gray-600">
-                    Our clients' needs come first, and we're committed to
-                    providing exceptional service.
+                  <p className="text-white font-semibold">
+                    Our clients are at the heart of everything we do. We strive
+                    to exceed expectations and build lasting relationships.
                   </p>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up-delay-2">
-                  <div className="text-secondary text-4xl mb-4">💡</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
+                <div className="bg-gray-900 p-6 rounded-lg shadow-md fade-in-up-delay-2 border border-gray-800">
+                  <div className="text-[#FFD700] text-4xl mb-4">🚀</div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-ciguatera">
                     Innovation
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-white font-semibold">
                     We continuously improve our services and embrace new
-                    technologies.
+                    technologies to better serve our clients.
                   </p>
                 </div>
               </div>

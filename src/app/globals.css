@@ -23,8 +23,8 @@
   }
 
   body {
-    @apply text-gray-900 antialiased font-times;
-    background: linear-gradient(to bottom, #f3faff 0%, #eaf4fb 100%);
+    @apply text-white antialiased font-times;
+    background: #000000;
   }
 
   /* Remove underlines from navigation links */
@@ -154,12 +154,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #FFD700;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #B8860B;
 }
 
 /* Fade-in effect that only happens once per page load */

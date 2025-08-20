@@ -226,7 +226,7 @@ export default function RatesPage() {
   return (
     <PageContainer>
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8 bg-black py-16">
         <div className="flex flex-col items-center text-center">
           <div className="mb-6 flex justify-center h-24 relative w-full max-w-md mx-auto">
             {/* Image carousel with back-to-front fade */}
@@ -263,99 +263,84 @@ export default function RatesPage() {
               ))}
             </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up">
-            Live Exchange Rates
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-white font-ciguatera fade-in-up">
+            Currencies We Exchange
           </h1>
-          <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1">
-            Real-time. Transparent. Always current.
+          <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-bold text-[#FFD700] fade-in-up-delay-1 font-ciguatera">
+            Major and Exotic Currencies
           </p>
-          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-500 fade-in-up-delay-2">
-            Live rates updated every minute. Scroll down to see today's best rates—trusted by thousands.
+          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white fade-in-up-delay-2 font-semibold">
+            We handle all major and exotic currencies. Contact us for current rates and competitive pricing.
           </p>
         </div>
       </div>
 
       {/* Rates Table */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="w-full fade-in-up">
-          {/* Header with refresh button and status */}
+          {/* Header with contact info */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
             <div className="flex items-center space-x-4 mb-4 sm:mb-0">
-              <h2 className="text-2xl font-bold text-gray-900">Live Exchange Rates</h2>
+              <h2 className="text-3xl font-bold text-white font-ciguatera">Available Currencies</h2>
               <div className="flex items-center space-x-4">
-                {lastUpdated && (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-500">
-                      Last updated: {formatTimeAgo(lastUpdated)}
-                    </span>
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  </div>
-                )}
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-400">
-                    Current time: {hasMounted ? currentTime.toLocaleTimeString() : '--:--:--'}
+                  <span className="text-sm text-[#FFD700] font-semibold">
+                    Contact us for current rates
                   </span>
-                  <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-400">
-                    Auto-refresh in: {formatCountdown(countdown)}
-                  </span>
-                  <div className="w-1 h-1 bg-orange-500 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-[#FFD700] rounded-full"></div>
                 </div>
               </div>
             </div>
-            <button
-              onClick={handleRefresh}
-              disabled={contextIsLoading || isRefreshing}
-              className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            <a
+              href="/contact"
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#FFD700] to-[#B8860B] text-black font-bold rounded-lg hover:from-[#B8860B] hover:to-[#FFD700] transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <svg 
-                className={`w-4 h-4 ${contextIsLoading ? 'animate-spin' : ''}`} 
+                className="w-5 h-5" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582M20 20v-5h-.581M5.582 9A7.003 7.003 0 0112 5c1.657 0 3.156.576 4.358 1.535M18.418 15A7.003 7.003 0 0112 19a6.978 6.978 0 01-4.358-1.535" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <span>{contextIsLoading ? 'Refreshing...' : 'Refresh Rates'}</span>
-            </button>
+              <span>Contact Us</span>
+            </a>
           </div>
 
           {/* Error message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+            <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 text-red-300 rounded-lg">
               {error}
             </div>
           )}
 
           <div className="overflow-hidden relative">
-            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="bg-gray-900 rounded-xl shadow-2xl overflow-x-auto border border-gray-800">
+              <table className="min-w-full divide-y divide-gray-800">
+                <thead className="bg-gray-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-times">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#FFD700] uppercase tracking-wider font-ciguatera">
                       Flag
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-times">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#FFD700] uppercase tracking-wider font-ciguatera">
                       Currency
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-times">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#FFD700] uppercase tracking-wider font-ciguatera">
                       Country
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-times">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#FFD700] uppercase tracking-wider font-ciguatera">
                       Buy Rate
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-times">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#FFD700] uppercase tracking-wider font-ciguatera">
                       Sell Rate
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-800">
                   {rates.map((rate, index) => (
                     <tr 
                       key={rate.currency} 
-                      className={`hover:bg-gray-50 transition-all duration-300 ${
+                      className={`hover:bg-gray-800/50 transition-all duration-300 ${
                         index < visibleRows 
                           ? 'opacity-100 translate-y-0' 
                           : 'opacity-0 translate-y-4'
@@ -377,31 +362,19 @@ export default function RatesPage() {
                         </div>
                       </td>
                       <td className="px-6 py-6 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 font-times">{rate.currency}</div>
+                        <div className="text-lg font-bold text-white font-ciguatera">{rate.currency}</div>
                       </td>
                       <td className="px-6 py-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{rate.countryName}</div>
+                        <div className="text-lg font-semibold text-white">{rate.countryName}</div>
                       </td>
                       <td className="px-6 py-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {rate.isLoading ? (
-                            <div className="animate-pulse bg-gray-200 h-4 w-16 rounded"></div>
-                          ) : rate.error ? (
-                            <span className="text-red-500 text-xs">Error</span>
-                          ) : (
-                            rate.buyRate.toFixed(4)
-                          )}
+                        <div className="text-lg font-bold text-white">
+                          <span className="text-[#FFD700] font-semibold">Contact Us</span>
                         </div>
                       </td>
                       <td className="px-6 py-6 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {rate.isLoading ? (
-                            <div className="animate-pulse bg-gray-200 h-4 w-16 rounded"></div>
-                          ) : rate.error ? (
-                            <span className="text-red-500 text-xs">Error</span>
-                          ) : (
-                            rate.sellRate.toFixed(4)
-                          )}
+                        <div className="text-lg font-bold text-white">
+                          <span className="text-[#FFD700] font-semibold">Contact Us</span>
                         </div>
                       </td>
                     </tr>
@@ -411,13 +384,13 @@ export default function RatesPage() {
             </div>
           </div>
           
-          <div className="mt-4 text-sm text-gray-500 text-center">
-            <p>Rates are updated every 5 minutes automatically. Click "Refresh Rates" for immediate updates.</p>
-            <p className="mt-1">For the most accurate rates, please contact us directly or visit our locations.</p>
-            <p className="mt-12">
-              * Live rates are subject to change without notice. Rates shown include our standard spread.<br />
-              ** Minimum transaction amounts may apply. Please visit our location for more details.
-            </p>
+          <div className="mt-8 text-lg text-white text-center font-semibold">
+            <p className="mb-2">We handle all major and exotic currencies with competitive rates.</p>
+            <p className="mb-6">For current rates and pricing, please contact us directly or visit our locations.</p>
+            <div className="mt-12 text-sm text-gray-300">
+              <p className="mb-2">* Rates are subject to change without notice. Contact us for the most current pricing.</p>
+              <p>** Minimum transaction amounts may apply. Please visit our location for more details.</p>
+            </div>
           </div>
         </div>
       </section>

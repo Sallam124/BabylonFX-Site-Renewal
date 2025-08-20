@@ -25,7 +25,7 @@ const Footer = () => {
   }
 
   return (
-    <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#4a3d2a] text-white w-full z-50 shadow-lg">
+          <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white w-full z-50 shadow-lg">
       {/* Top-right Glow */}
       <div className="absolute top-0 right-0 w-48 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-2 pointer-events-none"></div>
       
@@ -35,11 +35,11 @@ const Footer = () => {
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
             <div className="text-3xl font-bold mb-4"
                 style={{
-                  background: "linear-gradient(90deg, #ffe7b2 0%, #ffe7b2 60%, #fff 100%)",
+                  background: "linear-gradient(90deg, #FFD700 0%, #FFD700 60%, #fff 100%)",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  filter: "drop-shadow(0 0 0.5px rgba(255, 231, 178, 0.005))",
+                  filter: "drop-shadow(0 0 0.5px rgba(255, 215, 0, 0.005))",
                   display: "inline-block",
                 }}>
               BabylonFX
