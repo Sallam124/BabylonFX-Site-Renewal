@@ -25,7 +25,7 @@ const Footer = () => {
   }
 
   return (
-    <section className="relative py-4 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#0d0d0d] via-[#232323] to-[#4a3d2a] text-white w-full z-50 shadow-lg">
+    <section className="relative py-4 px-4 sm:px-6 lg:px-8 text-white w-full z-50 shadow-lg bg-[#2a2a2a]">
       {/* Top-right Glow */}
       <div className="absolute top-0 right-0 w-48 h-1 bg-gradient-to-bl from-blue-400 to-purple-400 rounded-full blur-3xl opacity-2 pointer-events-none"></div>
       

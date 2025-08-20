@@ -81,9 +81,9 @@ const ClientNavigation = () => {
       {/* Main Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-500 transition-colors transition-opacity ${
         scrolled 
-          ? 'bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20' 
-          : 'bg-gradient-to-r from-[#1a1a2e] to-[#e94560]'
-      }`}>
+          ? 'bg-gradient-to-r from-white via-[#f8f8f8] to-[#d2ac47] shadow-lg' 
+          : 'bg-gradient-to-r from-white via-[#f8f8f8] to-[#d2ac47]'
+                      }`} style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8f8f8 10%, #e8d4a0 25%, #d2ac47 45%, #d2ac47 65%, #c19b3e 75%, #b08a35 80%, #9f792c 85%, #8e6823 88%, #7d571a 91%, #6c4611 94%, #5b3508 96%, #4a2400 98%, #2a2a2a 100%)' }}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
@@ -105,7 +105,7 @@ const ClientNavigation = () => {
                 width={180}
                 height={48}
                 className={`h-10 w-auto transition-all duration-500 transition-colors transition-opacity ${
-                  scrolled ? 'brightness-100 opacity-100' : 'brightness-0 invert opacity-80'
+                  scrolled ? 'brightness-100 opacity-100' : 'brightness-100 opacity-100'
                 }`}
               />
             </a>
@@ -113,22 +113,18 @@ const ClientNavigation = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`md:hidden p-3 rounded-full transition-all duration-300 ${
-                scrolled 
-                  ? 'bg-gray-100 hover:bg-gray-200' 
-                  : 'bg-white/10 hover:bg-white/20'
-              }`}
+              className="md:hidden p-3 rounded-full transition-all duration-300 bg-gray-800/10 hover:bg-gray-800/20"
             >
               <span className="sr-only">Open menu</span>
-              <div className="w-7 h-7 flex flex-col justify-center items-center gap-2">
+              <div className="w-7 h-7 flex flex-col justify-center items-center gap-1.5">
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? 'opacity-0' : ''}`} />
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
               </div>
             </button>
@@ -140,19 +136,18 @@ const ClientNavigation = () => {
                   key={item.path}
                   href={item.path}
                   onClick={e => handleNavClick(e, item.path)}
-                  className={`px-5 py-2.5 rounded-full text-lg transition-all duration-500 ease-out no-underline hover:no-underline ${
-                    currentPath === item.path
-                      ? scrolled 
-                        ? 'bg-white/20 backdrop-blur-xl text-gray-800 shadow-xl'
-                        : 'bg-white/20 text-white backdrop-blur-sm'
-                      : scrolled
-                        ? 'text-gray-800 hover:bg-white/20 hover:backdrop-blur-xl hover:text-gray-800 hover:scale-110 hover:shadow-xl'
-                        : 'text-white hover:bg-white/10 hover:text-white hover:scale-110 hover:shadow-md hover:shadow-black/20 hover:ring-1 hover:ring-black/30'
-                  }`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  {item.name}
-                </a>
+                                                          className={`px-3 py-1.5 text-base transition-all duration-300 ease-out no-underline hover:no-underline relative group text-gray-800 ${
+                      currentPath === item.path ? 'selected' : ''
+                    }`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <span className="relative inline-block">
+                      {item.name}
+                      <div className={`absolute left-0 bottom-0 w-full h-[1.9px] bg-black transform transition-transform duration-300 ease-out origin-left ${
+                        currentPath === item.path ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                      }`}></div>
+                    </span>
+                  </a>
               ))}
             </div>
           </div>

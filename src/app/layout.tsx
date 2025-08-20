@@ -29,7 +29,7 @@ export default async function RootLayout({
   const isRateAlert = pathname.startsWith('/rate-alert');
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-times text-gray-900" suppressHydrationWarning>
+      <body className="text-gray-900" suppressHydrationWarning>
         <GlobalLoadingProvider>
           <RouteLoader />
           <Suspense fallback={<Loading />}>

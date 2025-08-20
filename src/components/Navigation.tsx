@@ -35,7 +35,7 @@ const Navigation = () => {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled 
           ? 'bg-white/95 backdrop-blur-md shadow-lg' 
-          : 'bg-gradient-to-r from-[#1a1a2e] to-[#e94560]'
+          : 'bg-gradient-to-r from-white to-[#d2ac47]'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
@@ -47,7 +47,7 @@ const Navigation = () => {
                 width={180}
                 height={48}
                 className={`h-10 w-auto transition-all duration-300 ${
-                  scrolled ? 'brightness-200 contrast-150' : 'brightness-200 contrast-150 invert'
+                  scrolled ? 'brightness-200 contrast-150' : 'brightness-100 contrast-100'
                 }`}
               />
             </Link>
@@ -58,19 +58,19 @@ const Navigation = () => {
               className={`md:hidden p-3 rounded-full transition-all duration-300 ${
                 scrolled 
                   ? 'bg-gray-100 hover:bg-gray-200' 
-                  : 'bg-white/10 hover:bg-white/80'
+                  : 'bg-gray-800/10 hover:bg-gray-800/20'
               }`}
             >
               <span className="sr-only">Open menu</span>
               <div className="w-7 h-7 flex flex-col justify-center items-center gap-2">
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? 'opacity-0' : ''}`} />
                 <span className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? 'bg-gray-800' : 'bg-white'
+                  scrolled ? 'bg-gray-800' : 'bg-gray-800'
                 } ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
               </div>
             </button>
@@ -91,10 +91,10 @@ const Navigation = () => {
                         pathname === item.path
                           ? scrolled 
                             ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                            : 'bg-white/20 text-white backdrop-blur-sm'
+                            : 'bg-gray-800/20 text-gray-800 backdrop-blur-sm'
                           : scrolled
                             ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                            : 'text-white hover:bg-white/10'
+                            : 'text-gray-800 hover:bg-gray-800/10'
                       }`}
                     >
                       {item.name}
@@ -108,10 +108,10 @@ const Navigation = () => {
                       pathname === item.path
                         ? scrolled 
                           ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                          : 'bg-white/20 text-white backdrop-blur-sm'
+                          : 'bg-gray-800/20 text-gray-800 backdrop-blur-sm'
                         : scrolled
                           ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                          : 'text-white hover:bg-white/10'
+                          : 'text-gray-800 hover:bg-gray-800/10'
                     }`}
                   >
                     {item.name}
