@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import PageContainer from '@/components/PageContainer'
-import CurrencyConverterWrapper from '@/components/CurrencyConverterWrapper'
 import AnimateOnScroll from '@/components/AnimateOnScroll'
 import { useRouter } from 'next/navigation'
 import { useGlobalLoading } from '@/context/GlobalLoadingContext'
@@ -107,25 +106,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Currency Converter Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <CurrencyConverterWrapper />
-          </div>
-        </section>
+
 
         {/* Features Section */}
         <AnimateOnScroll>
-          <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <section className="py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4 fade-in-up">
-                  Why Choose BabylonFX?
-                </h2>
-                <p className="text-xl text-gray-700 fade-in-up-delay-1">
-                  Experience the difference with our comprehensive currency exchange services
-                </p>
-              </div>
+
               
                              {/* Desktop: Overlapping Stack of Cards Layout with Hover Spread */}
                <div className="hidden lg:block w-full overflow-visible mt-16">
