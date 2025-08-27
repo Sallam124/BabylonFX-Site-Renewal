@@ -14,7 +14,7 @@ const Footer = () => {
       { name: 'About Us', href: '/about' },
       { name: 'Contact', href: '/contact' },
       { name: 'Careers', href: '/careers' },
-      { name: 'FAQs', href: '/faqs' },
+  
     ],
     legal: [
       { name: 'Privacy Policy', href: '/privacy' },
@@ -89,7 +89,7 @@ const Footer = () => {
 
           {/* Services Links */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <h3 className="text-xl font-bold text-white mb-6 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+            <h3 className="text-xl font-light text-white mb-6 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
               Services
             </h3>
             <ul className="space-y-3">
@@ -97,7 +97,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-200 transition-all duration-300 text-lg group flex items-center relative"
+                    className="text-gray-100 transition-all duration-300 text-lg group flex items-center relative"
                   >
                     <span className="group-hover:translate-x-1 transition-transform duration-300 relative">
                       {link.name}
@@ -111,7 +111,7 @@ const Footer = () => {
 
           {/* Company Links */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <h3 className="text-xl font-bold text-white mb-6 bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
+            <h3 className="text-xl font-light text-white mb-6 bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
               Company
             </h3>
             <ul className="space-y-3">
@@ -133,7 +133,7 @@ const Footer = () => {
 
           {/* Legal Links */}
           <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-            <h3 className="text-xl font-bold text-white mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+            <h3 className="text-xl font-light text-white mb-6 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
               Legal
             </h3>
             <ul className="space-y-3">

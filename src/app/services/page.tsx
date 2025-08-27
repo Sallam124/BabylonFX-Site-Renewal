@@ -3,7 +3,7 @@ import PageContainer from '@/components/PageContainer'
 const services = [
   {
     title: 'Currency Exchange',
-    description: `Babylon Monetary Services buys and sells all tradable major and exotic currencies. We handle all major and exotic currencies with competitive rates. For any specific currency inquiries, please contact us for current rates. We have multiple methods of payment for purchasing a foreign currency, including cash, bankdraft and wire transfer*. *Wire transfer in USD or CAD only.`,
+    description: `We buy and sell all major and exotic currencies at competitive rates. Payments are accepted in cash or debit, ensuring secure, reliable, and efficient transactions for every exchange.`,
     icon: (
       <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <circle cx="8" cy="8" r="6" />
@@ -13,7 +13,7 @@ const services = [
       </svg>
     ),
     features: [
-      'All major and exotic currencies',
+      'Most major and exotic currencies',
       'Competitive exchange rates',
       'Multiple payment methods',
       'No hidden fees',
@@ -22,7 +22,7 @@ const services = [
   },
   {
     title: 'International Money Transfers',
-    description: `Babylon Monetary Services transfers money worldwide for thousands of clients every year. Besides currency exchange, money transfer is our most popular service as we maintain a no hidden fee policy. We offer money transfer to most countries worldwide for a flat fee of $7 CAD for up to $7000 CAD transferred. We encourage customers to contact us ahead of time to inquire whether their country is included in this offer.`,
+    description: `We make international money transfers simple and transparent. Thousands of clients rely on Babylon Monetary Services each year to send funds safely, quickly, and without hidden fees.`,
     icon: (
       <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -32,10 +32,9 @@ const services = [
     ),
     features: [
       'Worldwide money transfers',
-      'Flat fee of $7 CAD',
-      'Up to $7000 CAD per transfer',
+      'Fast delivery times',
       'No hidden charges',
-      'Fast delivery times'
+      'High-capacity transfers available '
     ]
   }
 ]
@@ -47,10 +46,10 @@ export default function Services() {
     <>
       <PageContainer>
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-primary fade-in-up-delay-0">
+          <h1 className="text-5xl md:text-7xl font-extralight tracking-tight mb-4 text-primary fade-in-up-delay-0">
             Our Services
           </h1>
-          <p className="mt-2 max-w-2xl mx-auto text-2xl md:text-3xl font-semibold text-gray-700 fade-in-up-delay-1 text-center">
+          <p className="-mt-2 max-w-2xl mx-auto text-2xl md:text-2xl font-light text-gray-700 fade-in-up-delay-1 text-center">
             Discover the range of services we offer to meet your currency exchange needs
           </p>
         </div>
@@ -61,7 +60,7 @@ export default function Services() {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className={`bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 fade-in-up${index > 0 ? `-delay-${index}` : ''} border border-gray-200`}
+                  className={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 fade-in-up${index > 0 ? `-delay-${index}` : ''} border border-gray-200`}
                 >
                   <div className="flex items-center mb-6">
                     <div className="mr-4">
@@ -70,7 +69,7 @@ export default function Services() {
                     <h3 className="text-3xl font-bold text-primary">{service.title}</h3>
                   </div>
                   
-                  <p className="text-gray-600 mb-6 text-lg leading-relaxed">{service.description}</p>
+                  <p className={`${service.title === 'International Money Transfers' || service.title === 'Currency Exchange' ? 'text-black' : 'text-gray-600'} mb-6 text-lg leading-relaxed`}>{service.description}</p>
                   
                   <div className="space-y-3">
                     <h4 className="text-lg font-bold text-primary mb-3">Key Features:</h4>
@@ -89,9 +88,9 @@ export default function Services() {
                   <div className="mt-8">
                     <a 
                       href="/contact#contact-info" 
-                      className="block w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-center"
+                      className="text-base block w-full bg-primary hover:bg-secondary text-white font-light py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-center"
                     >
-                      Contact Us to Learn More
+                      Contact us to learn more
                     </a>
                   </div>
                 </div>

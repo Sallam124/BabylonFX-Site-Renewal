@@ -51,15 +51,20 @@ const MobileMenu = ({ isOpen, onClose, navItems, pathname }: MobileMenuProps) =>
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center px-5 py-4 rounded-xl text-lg transition-all duration-200 ${
+                  className={`flex items-center px-5 py-4 text-lg transition-all duration-200 relative ${
                     pathname === item.path
-                      ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
+                      ? 'text-black'
+                      : 'text-gray-600 hover:text-black'
                   }`}
                   onClick={onClose}
                 >
                   <span className="mr-4 text-2xl">{item.icon}</span>
-                  {item.name}
+                  <span className="relative">
+                    {item.name}
+                    <div className={`absolute left-0 bottom-0 w-full h-0.5 bg-black transform transition-transform duration-300 ease-out origin-left ${
+                      pathname === item.path ? 'scale-x-100' : 'scale-x-0'
+                    }`}></div>
+                  </span>
                 </Link>
               ))}
             </nav>

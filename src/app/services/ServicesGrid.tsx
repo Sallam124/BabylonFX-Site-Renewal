@@ -49,15 +49,15 @@ export default function ServicesGrid() {
           <div
             key={index}
             ref={fadeRef as React.LegacyRef<HTMLDivElement>}
-            className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 fade-in-up scroll-trigger${index > 0 ? `-delay-${index}` : ''}`}
+            className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 fade-in-up scroll-trigger${index > 0 ? `-delay-${index}` : ''}`}
           >
             <div className="text-4xl mb-4">{service.icon}</div>
             <h3 className="text-xl font-semibold text-primary mb-2">{service.title}</h3>
-            <p className="text-gray-600 mb-4">{service.description}</p>
+            <p className={`${service.title === 'International Money Transfers' || service.title === 'Currency Exchange' ? 'text-black' : 'text-gray-600'} mb-4`}>{service.description}</p>
             {service.title === 'Rate Alerts' && (
               <a
                 href="/rate-alert"
-                className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-md transition-colors duration-300 mt-2"
+                className="inline-block bg-secondary hover:bg-secondary-light text-white font-bold py-2 px-6 rounded-2xl transition-colors duration-300 mt-2"
               >
                 Set a Rate Alert
               </a>

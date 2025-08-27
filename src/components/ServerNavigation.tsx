@@ -75,16 +75,7 @@ const ServerNavigation = ({ pathname }: ServerNavigationProps) => {
             >
               Contact
             </Link>
-            <Link 
-              href="/faqs" 
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/faqs') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-              }`}
-            >
-              FAQs
-            </Link>
+
           </div>
         </div>
       </div>

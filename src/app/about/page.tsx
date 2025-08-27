@@ -76,48 +76,7 @@ const About = () => {
           </div>
         </section>
 
-        {/* Values */}
-        <AnimateOnScroll>
-          <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl font-bold text-primary text-center mb-12 fade-in-up">
-                Our Values
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up">
-                  <div className="text-secondary text-4xl mb-4">🎯</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
-                    Integrity
-                  </h3>
-                  <p className="text-gray-600">
-                    We believe in transparent pricing and honest communication
-                    with our clients.
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up-delay-1">
-                  <div className="text-secondary text-4xl mb-4">🤝</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
-                    Customer Focus
-                  </h3>
-                  <p className="text-gray-600">
-                    Our clients' needs come first, and we're committed to
-                    providing exceptional service.
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md fade-in-up-delay-2">
-                  <div className="text-secondary text-4xl mb-4">💡</div>
-                  <h3 className="text-xl font-semibold text-primary mb-2">
-                    Innovation
-                  </h3>
-                  <p className="text-gray-600">
-                    We continuously improve our services and embrace new
-                    technologies.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-        </AnimateOnScroll>
+
 
         {/* Team */}
         <AnimateOnScroll>

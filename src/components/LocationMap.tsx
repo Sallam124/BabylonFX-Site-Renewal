@@ -174,6 +174,11 @@ const LocationMap = () => {
       })
       infoWindow.open(map, marker)
       setSelectedLocation(location)
+      
+      // Close the panel on mobile after selecting a location
+      if (isMobile) {
+        setPanelOpen(false)
+      }
     }
   }
 
@@ -217,6 +222,11 @@ const LocationMap = () => {
           markers[nearest.name].infoWindow.open(map, markers[nearest.name].marker)
         }
         setSelectedLocation(nearest)
+        
+        // Close the panel on mobile after finding nearest branch
+        if (isMobile) {
+          setPanelOpen(false)
+        }
       },
       (err) => {
         if (err.code === 1) {

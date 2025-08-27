@@ -27,7 +27,7 @@ const features = [
   },
   {
     title: 'Fast & Secure',
-    description: 'Quick transactions with bank-level security and multiple payment options.',
+    description: 'Quick secure transactions with multiple payment options.',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check-icon lucide-shield-check w-8 h-8 text-green-600">
         <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
@@ -37,8 +37,8 @@ const features = [
     gradient: 'from-purple-600 to-pink-700',
   },
   {
-    title: '24/7 Support',
-    description: 'Our customer service team is available to help you anytime, anywhere.',
+    title: 'Reliable weekly support',
+    description: 'Available Monday through Saturday, our team is committed to delivering responsive, high-quality service across six full days each week.',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 w-8 h-8 text-blue-600">
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
@@ -57,16 +57,7 @@ const features = [
     ),
     gradient: 'from-orange-600 to-red-700',
   },
-  {
-    title: 'Business Solutions',
-    description: 'Specialized services for businesses with international operations.',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 w-8 h-8 text-black">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
-      </svg>
-    ),
-    gradient: 'from-yellow-600 to-orange-700',
-  },
+  
 ]
 
 const inter = Inter({ subsets: ['latin'], weight: ['700'] })
@@ -97,7 +88,7 @@ export default function Home() {
       <PageContainer>
         {/* Hero Section */}
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center mt-8 mb-8 px-4 sm:px-6 lg:px-8">
-          <h1 className={`text-5xl md:text-7xl font-extrabold tracking-wide mb-2 text-primary italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center ${dmSerifDisplay.className}`}>
+          <h1 className={`text-5xl md:text-7xl font-light tracking-wide mb-2 text-primary italic fade-in-up-delay-1 leading-tight pb-2 drop-shadow-lg text-center ${dmSerifDisplay.className}`}>
             Effortless Currency Exchange
           </h1>
           <div className="mt-0 max-w-3xl mx-auto text-center fade-in-up-delay-1">
