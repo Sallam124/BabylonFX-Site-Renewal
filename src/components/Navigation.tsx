@@ -9,6 +9,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [showRatesDropdown, setShowRatesDropdown] = useState(false)
+  const [animatedItems, setAnimatedItems] = useState<boolean[]>(new Array(5).fill(false))
   const pathname = usePathname()
 
   // Handle scroll effect
@@ -20,22 +21,56 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Handle mobile menu animations
+  useEffect(() => {
+    if (isMenuOpen) {
+      // Animate each item individually with delays
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          setAnimatedItems(prev => {
+            const newState = [...prev];
+            newState[i] = true;
+            return newState;
+          });
+        }, i * 200);
+      }
+    } else {
+      // Reset all animations when menu closes
+      setAnimatedItems(new Array(5).fill(false));
+    }
+  }, [isMenuOpen]);
+
   const navItems = [
     { name: 'Home', path: '/', icon: '' },
     { name: 'Services', path: '/services', icon: '' },
     { name: 'Rates', path: '/rates', icon: '' },
     { name: 'About Us', path: '/about', icon: '' },
     { name: 'Contact', path: '/contact', icon: '' },
-
   ]
 
   return (
     <>
+            <style jsx>{`
+        @keyframes slideInFromRight {
+          0% {
+            opacity: 0;
+            transform: scale(0.95) translateX(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+          }
+        }
+        
+        .animate-item {
+          animation: slideInFromRight 0.5s ease-out forwards;
+        }
+      `}</style>
       {/* Main Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      <nav className={`fixed top-4 left-4 right-4 z-50 transition-all duration-300 rounded-2xl ${
         scrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg' 
-          : 'bg-gradient-to-r from-white to-[#d2ac47]'
+          ? 'bg-white/20 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-white/30' 
+          : 'bg-white/15 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-white/30'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
@@ -75,59 +110,53 @@ const Navigation = () => {
               </div>
             </button>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-2">
-              {navItems.map((item) => (
-                item.name === 'Rates' ? (
-                  <div
-                    key={item.path}
-                    className="relative"
-                    onMouseEnter={() => setShowRatesDropdown(true)}
-                    onMouseLeave={() => setShowRatesDropdown(false)}
-                  >
+                        {/* Desktop Menu */}
+            <div className="hidden md:flex items-center">
+              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-2xl p-2 border border-white/20">
+                {navItems.map((item) => (
+                  item.name === 'Rates' ? (
+                    <div
+                      key={item.path}
+                      className="relative"
+                      onMouseEnter={() => setShowRatesDropdown(true)}
+                      onMouseLeave={() => setShowRatesDropdown(false)}
+                    >
+                      <Link
+                        href={item.path}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 mx-1 ${
+                          pathname === item.path
+                            ? 'bg-white/90 text-gray-800 shadow-md'
+                            : 'text-gray-700 hover:bg-white/60 hover:text-gray-800'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    </div>
+                  ) : (
                     <Link
+                      key={item.path}
                       href={item.path}
-                      className={`px-5 py-2.5 rounded-full text-base transition-all duration-300 ${
+                      className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 mx-1 ${
                         pathname === item.path
-                          ? scrolled 
-                            ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                            : 'bg-gray-800/20 text-gray-800 backdrop-blur-sm'
-                          : scrolled
-                            ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                            : 'text-gray-800 hover:bg-gray-800/10'
+                          ? 'bg-white/90 text-gray-800 shadow-md'
+                          : 'text-gray-700 hover:bg-white/60 hover:text-gray-800'
                       }`}
                     >
                       {item.name}
                     </Link>
-                  </div>
-                ) : (
-                  <Link
-                    key={item.path}
-                    href={item.path}
-                    className={`px-5 py-2.5 rounded-full text-base transition-all duration-300 ${
-                      pathname === item.path
-                        ? scrolled 
-                          ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
-                          : 'bg-gray-800/20 text-gray-800 backdrop-blur-sm'
-                        : scrolled
-                          ? 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700]/60 hover:to-[#ffc107]/60 hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.15)] transition-all duration-300'
-                          : 'text-gray-800 hover:bg-gray-800/10'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                )
-              ))}
+                  )
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Spacer to prevent content overlap */}
-      <div className="h-24"></div>
+      <div className="h-32"></div>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-40 transition-all duration-300 md:hidden ${
+      <div className={`fixed inset-0 z-[9999] transition-all duration-300 md:hidden ${
         isMenuOpen ? 'bg-black/50 backdrop-blur-sm' : 'bg-transparent pointer-events-none'
       }`}>
         <div className={`fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-xl transition-transform duration-300 ${
@@ -156,15 +185,15 @@ const Navigation = () => {
             </div>
             <div className="flex-1 overflow-y-auto">
               <nav className="px-6 py-8 space-y-2">
-                {navItems.map((item) => (
+                {navItems.map((item, index) => (
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`flex items-center px-5 py-4 rounded-xl text-lg transition-all duration-200 ${
+                    className={`flex items-center px-5 py-4 rounded-xl text-lg transition-all duration-500 transform ${
                       pathname === item.path
                         ? 'bg-gradient-to-r from-[#ffd700] to-[#ffc107] text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]'
                         : 'text-gray-600 hover:bg-gradient-to-r hover:from-[#ffd700] hover:to-[#ffc107] hover:text-black hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all duration-300'
-                    }`}
+                    } ${animatedItems[index] ? 'animate-item' : 'opacity-0 scale-95 translate-x-5'}`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <span className="mr-4 text-2xl">{item.icon}</span>
@@ -175,7 +204,7 @@ const Navigation = () => {
             </div>
             <div className="p-6 border-t">
               <div className="flex justify-center space-x-6">
-                <a href="tel:+1234567890" className="p-3 text-gray-600 hover:text-[#ffd700] hover:scale-110 transition-all duration-300">
+                <a href="tel:+1234567890" className="p-3 text-black hover:text-[#ffd700] hover:scale-110 transition-all duration-300">
                   <span className="sr-only">Call us</span>
                   <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />

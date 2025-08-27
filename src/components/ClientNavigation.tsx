@@ -78,11 +78,11 @@ const ClientNavigation = () => {
   return (
     <>
       {/* Main Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-500 transition-colors transition-opacity ${
+      <nav         className={`fixed top-4 left-4 right-4 z-50 transition-all duration-500 transition-colors transition-opacity rounded-2xl ${
         scrolled 
-          ? 'bg-gradient-to-r from-white via-[#f8f8f8] to-[#d2ac47] shadow-lg' 
-          : 'bg-gradient-to-r from-white via-[#f8f8f8] to-[#d2ac47]'
-                      }`} style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8f8f8 10%, #e8d4a0 25%, #d2ac47 45%, #d2ac47 65%, #c19b3e 75%, #b08a35 80%, #9f792c 85%, #8e6823 88%, #7d571a 91%, #6c4611 94%, #5b3508 96%, #4a2400 98%, #2a2a2a 100%)' }}>
+          ? 'bg-white/20 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-white/30' 
+          : 'bg-white/15 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12),0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-white/30'
+                      }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
@@ -154,7 +154,7 @@ const ClientNavigation = () => {
       </nav>
 
       {/* Spacer to prevent content overlap */}
-      <div className="h-24"></div>
+      <div className="h-32"></div>
 
       {/* Lazy-loaded Mobile Menu */}
       {isMenuOpen && (
